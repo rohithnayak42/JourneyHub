@@ -32,7 +32,7 @@ const BusTracking = () => {
   };
 
   return (
-    <section className="py-24 relative overflow-hidden bg-slate-900 flex items-center justify-center">
+    <div className="relative overflow-hidden bg-slate-900 rounded-[24px] p-8 md:p-12 shadow-xl mb-12 flex items-center justify-center">
       {/* Premium Cinematic Background */}
       <div className="absolute inset-0 opacity-10" style={{
         backgroundImage: `radial-gradient(#3b82f6 0.5px, transparent 0.5px)`,
@@ -40,7 +40,7 @@ const BusTracking = () => {
       }} />
       <div className="absolute top-0 right-1/4 w-[800px] h-[800px] bg-blue-600/20 rounded-full blur-[120px] pointer-events-none animate-pulse" />
       
-      <div className="max-w-7xl mx-auto w-full px-6 relative z-10 flex flex-col lg:flex-row items-center gap-16">
+      <div className="w-full relative z-10 flex flex-col lg:flex-row items-center gap-16">
         {/* Left: Interactive Form */}
         <motion.div 
           initial={{ opacity: 0, x: -40 }}
@@ -180,7 +180,7 @@ const BusTracking = () => {
           </div>
         </motion.div>
       </div>
-    </section>
+    </div>
   );
 };
 

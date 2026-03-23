@@ -42,10 +42,10 @@ const SeatPreview = () => {
   const totalPrice = selectedSeats.reduce((sum, seat) => sum + seat.price, 0);
 
   return (
-    <section className="py-24 bg-white relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-1/2 h-full bg-slate-50 skew-x-12 translate-x-32 pointer-events-none" />
+    <div className="block-section !overflow-visible relative">
+      <div className="absolute top-0 right-0 w-1/2 h-full bg-slate-50 skew-x-12 translate-x-32 pointer-events-none rounded-r-[24px]" />
 
-      <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col lg:flex-row items-center lg:items-start gap-16">
+      <div className="w-full relative z-10 flex flex-col lg:flex-row items-center lg:items-start gap-16">
         
         <div className="flex-1 lg:max-w-md w-full">
           <motion.div
@@ -167,12 +167,11 @@ const SeatPreview = () => {
           </div>
         </motion.div>
       </div>
-      
       <style>{`
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
-    </section>
+    </div>
   );
 };
 

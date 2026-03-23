@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import SearchBar from '../search/SearchBar';
 
 const BusHero = () => {
-  const busBg = "/src/assets/bus-hero-hd.jpg";
+  const busBg = "/src/assets/bus-hero-final.png";
 
   return (
     <div className="relative h-[90vh] w-full flex items-center justify-center overflow-hidden bg-slate-900">

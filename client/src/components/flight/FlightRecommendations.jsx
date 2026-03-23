@@ -43,7 +43,7 @@ const recommendations = [
 
 const FlightRecommendations = () => {
   return (
-    <div className="w-full py-24 bg-slate-950 rounded-[3.5rem] px-8 lg:px-20 relative overflow-hidden group shadow-[0_40px_100px_rgba(0,0,0,0.5)] border border-white/5 mt-16">
+    <div className="relative overflow-hidden group shadow-xl border border-white/5 bg-slate-950 rounded-[24px] p-6 md:p-12 mb-12">
       {/* Cinematic Background Glow */}
       <div className="absolute inset-0 opacity-40 pointer-events-none">
         <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-blue-600/20 rounded-full blur-[120px] animate-pulse" />
@@ -88,8 +88,17 @@ const FlightRecommendations = () => {
             >
               {/* Image Container */}
               <div className="h-52 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/10 to-transparent z-10" />
-                <img src={rec.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" alt={rec.city} />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/10 to-transparent z-10 pointer-events-none" />
+                <img 
+                  src={rec.image || "https://images.unsplash.com/photo-1436491865332-7a61f114f509?auto=format&fit=crop&w=1920&q=80"} 
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" 
+                  alt={rec.city} 
+                  loading="lazy"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "https://images.unsplash.com/photo-1436491865332-7a61f114f509?auto=format&fit=crop&w=1920&q=80";
+                  }}
+                />
                 
                 {/* Match Score Badge */}
                 <div className="absolute top-6 right-6 z-20 bg-blue-600 text-[10px] font-black text-white px-4 py-2 rounded-xl shadow-2xl ring-4 ring-blue-600/20">

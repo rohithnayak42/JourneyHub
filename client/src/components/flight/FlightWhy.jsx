@@ -37,7 +37,7 @@ const reasons = [
 
 const FlightWhy = () => {
   return (
-    <section className="w-full py-20 bg-slate-950 rounded-[3.5rem] px-8 lg:px-16 relative overflow-hidden group shadow-[0_40px_100px_rgba(0,0,0,0.5)] border border-white/5 mt-16">
+    <div className="relative overflow-hidden group shadow-xl border border-white/5 bg-slate-950 rounded-[24px] p-6 md:p-12 mb-12">
       {/* Cinematic Background Elements */}
       <div className="absolute inset-0 opacity-30 pointer-events-none">
         <div className="absolute -top-20 -right-20 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[120px] animate-pulse" />
@@ -99,7 +99,7 @@ const FlightWhy = () => {
           })}
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 

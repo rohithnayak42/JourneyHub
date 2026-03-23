@@ -12,7 +12,7 @@ const destinations = [
 ];
 
 const HotelDestinations = () => (
-  <div className="w-full py-24">
+  <div className="block-section">
     <div className="flex flex-col md:flex-row items-end justify-between mb-16 gap-8">
       <div>
         <motion.h2 

@@ -7,7 +7,7 @@ const offers = [
     id: 1,
     title: "15% Cashback via PayTM",
     code: "PTMBUS15",
-    bgColor: "from-blue-600 to-cyan-500",
+    image: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=1920&q=80",
     terms: "Max cashback ₹250. Credited instantly.",
     expiryHours: 12
   },
@@ -15,7 +15,7 @@ const offers = [
     id: 2,
     title: "Flat ₹200 Off First App Booking",
     code: "FIRSTAPP",
-    bgColor: "from-rose-500 to-orange-500",
+    image: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1920&q=80",
     terms: "Min booking ₹1000. Mobile App only.",
     expiryHours: 4
   },
@@ -23,7 +23,7 @@ const offers = [
     id: 3,
     title: "Save 10% on Sleeper Buses",
     code: "SLEEP10",
-    bgColor: "from-emerald-500 to-teal-600",
+    image: "https://images.unsplash.com/photo-1570125909232-eb263c188f7e?auto=format&fit=crop&w=1920&q=80",
     terms: "Valid on all Private AC Sleepers.",
     expiryHours: 48
   }
@@ -66,51 +66,64 @@ const OfferCard = ({ offer, index }) => {
       viewport={{ once: true, margin: "-100px" }}
       whileHover={{ y: -10 }}
       transition={{ delay: index * 0.1, duration: 0.6 }}
-      className={`relative rounded-3xl overflow-hidden shadow-premium p-6 md:p-8 flex flex-col justify-between text-white group bg-gradient-to-br ${offer.bgColor}`}
+      className="relative min-h-[380px] rounded-[24px] overflow-hidden shadow-premium flex flex-col justify-between text-white group cursor-pointer"
     >
-      {/* Dynamic Glass Glow */}
-      <div className="absolute -top-20 -right-20 w-48 h-48 bg-white/20 rounded-full blur-[60px] group-hover:scale-150 transition-transform duration-1000 pointer-events-none" />
+      {/* Dynamic Background Image with Fallback */}
+      <img 
+        src={offer.image || "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=1920&q=80"}
+        alt={offer.title}
+        loading="lazy"
+        onError={(e) => {
+          e.target.onerror = null;
+          e.target.src = "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=1920&q=80";
+        }}
+        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+      />
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/50 to-black/30 opacity-90 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
       
-      <div className="relative z-10">
-        <div className="flex justify-between items-start mb-8">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-black/30 backdrop-blur-xl rounded-full text-[10px] font-black uppercase tracking-widest border border-white/10">
-            <Timer className="w-3 h-3 text-amber-400" />
-            Ends in {formatTime(timeLeft)}
+      <div className="relative z-10 p-6 md:p-8 flex flex-col h-full w-full justify-between">
+        <div>
+          <div className="flex justify-between items-start mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-black/40 backdrop-blur-xl rounded-full text-[10px] font-black uppercase tracking-widest border border-white/10 shadow-lg">
+              <Timer className="w-3 h-3 text-amber-400 animate-pulse" />
+              Ends in {formatTime(timeLeft)}
+            </div>
+            <button
+              onClick={handleCopy}
+              className="w-12 h-12 rounded-2xl bg-white/10 hover:bg-white/20 flex items-center justify-center backdrop-blur-md border border-white/20 transition-all active:scale-95 group/btn shadow-lg"
+            >
+              {copied ? <CheckCircle2 className="w-6 h-6 text-emerald-400" /> : <Copy className="w-6 h-6 group-hover:scale-110 transition-transform" />}
+            </button>
           </div>
+          
+          <h3 className="text-3xl font-black leading-tight mb-2 tracking-tighter text-white drop-shadow-md">{offer.title}</h3>
+          <p className="text-white/80 font-medium text-sm mb-6 leading-relaxed drop-shadow-sm">{offer.terms}</p>
+        </div>
+
+        <div className="mt-auto bg-black/40 p-2.5 rounded-2xl flex items-center justify-between border border-white/10 backdrop-blur-2xl shadow-xl">
+          <span className="font-mono font-black tracking-[0.3em] px-5 text-xl text-white">{offer.code}</span>
+          
           <button
-            onClick={handleCopy}
-            className="w-12 h-12 rounded-2xl bg-white/10 hover:bg-white/20 flex items-center justify-center backdrop-blur-md border border-white/20 transition-all active:scale-90 group/btn"
+            onClick={handleApply}
+            disabled={applied}
+            className={`px-8 py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all ${
+              applied ? 'bg-emerald-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.4)]' : 'bg-white text-slate-900 hover:shadow-2xl active:scale-95'
+            }`}
           >
-            {copied ? <CheckCircle2 className="w-6 h-6 text-emerald-400" /> : <Copy className="w-6 h-6 group-hover:scale-110 transition-transform" />}
+            <AnimatePresence mode="wait">
+              {applied ? (
+                <motion.span key="applied" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4" /> Applied
+                </motion.span>
+              ) : (
+                <motion.span key="apply" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                  Apply
+                </motion.span>
+              )}
+            </AnimatePresence>
           </button>
         </div>
-        
-        <h3 className="text-3xl font-black leading-tight mb-4 tracking-tighter">{offer.title}</h3>
-        <p className="text-white/70 font-medium text-sm mb-10 leading-relaxed pr-6">{offer.terms}</p>
-      </div>
-
-      <div className="relative z-10 mt-auto bg-black/30 p-2.5 rounded-2xl flex items-center justify-between border border-white/10 backdrop-blur-2xl">
-        <span className="font-mono font-black tracking-[0.3em] px-5 text-xl">{offer.code}</span>
-        
-        <button
-          onClick={handleApply}
-          disabled={applied}
-          className={`px-8 py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all ${
-            applied ? 'bg-emerald-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.4)]' : 'bg-white text-slate-900 hover:shadow-2xl active:scale-95'
-          }`}
-        >
-          <AnimatePresence mode="wait">
-            {applied ? (
-              <motion.span key="applied" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4" /> Applied
-              </motion.span>
-            ) : (
-              <motion.span key="apply" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                Apply
-              </motion.span>
-            )}
-          </AnimatePresence>
-        </button>
       </div>
     </motion.div>
   );
@@ -118,9 +131,8 @@ const OfferCard = ({ offer, index }) => {
 
 const BusOffers = () => {
   return (
-    <section className="py-24 bg-white">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-20">
+    <div className="block-section">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-12">
           <div>
             <motion.h2 
               initial={{ opacity: 0, y: 20 }}
@@ -144,8 +156,7 @@ const BusOffers = () => {
             <OfferCard key={offer.id} offer={offer} index={index} />
           ))}
         </div>
-      </div>
-    </section>
+    </div>
   );
 };
 

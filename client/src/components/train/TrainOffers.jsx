@@ -8,7 +8,7 @@ const offers = [
     title: "₹50 Off Tatkal",
     desc: "Get flat ₹50 cashback when you book Tatkal tickets via UPI",
     bank: "All Users",
-    gradient: "from-blue-500 to-indigo-600",
+    image: "https://images.unsplash.com/photo-1474487548417-781cb71495f3?auto=format&fit=crop&w=1920&q=80",
     savings: "Save up to ₹50",
     duration: { h: 4, m: 30, s: 0 }
   },
@@ -17,7 +17,7 @@ const offers = [
     title: "20% on Rail Pass",
     desc: "Book an IndianRail tourist pass and save 20% on unlimited travel",
     bank: "Foreign Tourists",
-    gradient: "from-amber-400 to-orange-500",
+    image: "https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=1920&q=80",
     savings: "Max discount ₹1,200",
     duration: { h: 9, m: 15, s: 0 }
   },
@@ -26,7 +26,7 @@ const offers = [
     title: "First-time Offer",
     desc: "New to JourneyHub? Enjoy ₹100 off on your first train ticket",
     bank: "New Users",
-    gradient: "from-emerald-400 to-teal-500",
+    image: "https://images.unsplash.com/photo-1541427468627-a89a96e5ca1d?auto=format&fit=crop&w=1920&q=80",
     savings: "Min booking ₹500",
     duration: { h: 23, m: 59, s: 0 }
   }
@@ -62,7 +62,7 @@ const TrainOffers = () => {
   const apply = (idx) => { setApplied(idx); setTimeout(() => setApplied(null), 2000); };
 
   return (
-    <div className="w-full py-20">
+    <div className="block-section">
       <div className="flex flex-col md:flex-row items-end justify-between mb-16 gap-8">
         <div>
           <motion.h2 
@@ -88,55 +88,69 @@ const TrainOffers = () => {
             transition={{ delay: idx * 0.1 }} 
             viewport={{ once: true }} 
             whileHover={{ y: -12 }}
-            className={`bg-gradient-to-br ${offer.gradient} rounded-[2.5rem] p-10 text-white shadow-premium hover:shadow-[0_40px_80px_rgba(0,0,0,0.2)] transition-all duration-500 relative overflow-hidden group`}
+            className="relative rounded-[2.5rem] p-10 text-white shadow-premium hover:shadow-[0_40px_80px_rgba(0,0,0,0.2)] transition-all duration-500 overflow-hidden group min-h-[420px] flex flex-col justify-between cursor-pointer"
           >
-            {/* Cinematic Overlay */}
-            <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-white/20 transition-all duration-1000" />
-            <div className="absolute bottom-0 left-0 w-32 h-32 bg-black/10 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2" />
+            {/* Dynamic Background Image with Fallback */}
+            <img 
+              src={offer.image || "https://images.unsplash.com/photo-1474487548417-781cb71495f3?auto=format&fit=crop&w=1920&q=80"}
+              alt={offer.title}
+              loading="lazy"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "https://images.unsplash.com/photo-1474487548417-781cb71495f3?auto=format&fit=crop&w=1920&q=80";
+              }}
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+            {/* Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-900/60 to-black/30 opacity-90 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
             
-            <div className="relative z-10">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="bg-white/20 p-2 rounded-lg backdrop-blur-md border border-white/20">
-                  <Tag size={16} />
+            <div className="relative z-10 flex flex-col h-full justify-between">
+              <div>
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="bg-white/20 p-2 rounded-lg backdrop-blur-md border border-white/20 shadow-sm">
+                    <Tag size={16} />
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-90 drop-shadow-sm">{offer.bank}</span>
                 </div>
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-90">{offer.bank}</span>
+                
+                <h3 className="text-3xl font-black mb-3 tracking-tighter drop-shadow-md">{offer.title}</h3>
+                <p className="text-white/80 text-sm mb-8 leading-relaxed font-medium line-clamp-2 drop-shadow-sm">{offer.desc}</p>
               </div>
-              
-              <h3 className="text-3xl font-black mb-3 tracking-tighter">{offer.title}</h3>
-              <p className="text-white/80 text-sm mb-8 leading-relaxed font-medium line-clamp-2">{offer.desc}</p>
-              
-              <div className="bg-black/20 backdrop-blur-xl border border-white/10 rounded-2xl p-4 flex items-center justify-between mb-8 shadow-inner">
-                <span className="font-black text-xl tracking-[0.2em]">{offer.code}</span>
-                <button 
-                  onClick={() => copy(offer.code, idx)} 
-                  className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest bg-white text-slate-900 hover:bg-blue-50 px-5 py-2.5 rounded-xl transition-all shadow-lg active:scale-95"
+
+              <div>
+                <div className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl p-4 flex items-center justify-between mb-8 shadow-inner">
+                  <span className="font-black text-xl tracking-[0.2em]">{offer.code}</span>
+                  <button 
+                    onClick={() => copy(offer.code, idx)} 
+                    className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest bg-white text-slate-900 hover:bg-blue-50 px-5 py-2.5 rounded-xl transition-all shadow-lg active:scale-95"
+                  >
+                    {copied === idx ? <CheckCircle size={14} className="text-emerald-500" /> : <Copy size={14} />}
+                    {copied === idx ? 'Copied' : 'Copy'}
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-between mb-10">
+                  <div>
+                     <p className="text-[10px] font-black uppercase tracking-widest opacity-60 mb-1">Max Benefit</p>
+                     <span className="text-lg font-black drop-shadow-sm">{offer.savings.split('₹')[1] ? `₹${offer.savings.split('₹')[1]}` : offer.savings}</span>
+                  </div>
+                  <div className="text-right">
+                     <p className="text-[10px] font-black uppercase tracking-widest opacity-60 mb-1 drop-shadow-sm">Expires In</p>
+                     <div className="flex items-center gap-2 opacity-90"><Timer size={14} /><Counter {...offer.duration} /></div>
+                  </div>
+                </div>
+
+                <motion.button 
+                  onClick={() => apply(idx)} 
+                  whileTap={{ scale: 0.95 }}
+                  className={`w-full py-5 rounded-2xl font-black uppercase tracking-widest text-[11px] transition-all shadow-2xl relative overflow-hidden group/btn
+                    ${applied === idx 
+                      ? 'bg-emerald-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.4)]' 
+                      : 'bg-white text-slate-900 hover:bg-slate-50 hover:shadow-white/20'}`}
                 >
-                  {copied === idx ? <CheckCircle size={14} className="text-emerald-500" /> : <Copy size={14} />}
-                  {copied === idx ? 'Copied' : 'Copy'}
-                </button>
+                  <span className="relative z-10">{applied === idx ? '✓ Applied Successfully' : 'Redeem Offer Now'}</span>
+                </motion.button>
               </div>
-
-              <div className="flex items-center justify-between mb-10">
-                <div>
-                   <p className="text-[10px] font-black uppercase tracking-widest opacity-60 mb-1">Max Benefit</p>
-                   <span className="text-lg font-black">{offer.savings.split('₹')[1] ? `₹${offer.savings.split('₹')[1]}` : offer.savings}</span>
-                </div>
-                <div className="text-right">
-                   <p className="text-[10px] font-black uppercase tracking-widest opacity-60 mb-1">Expires In</p>
-                   <div className="flex items-center gap-2 opacity-90"><Timer size={14} /><Counter {...offer.duration} /></div>
-                </div>
-              </div>
-
-              <motion.button 
-                onClick={() => apply(idx)} 
-                whileTap={{ scale: 0.95 }}
-                className={`w-full py-5 rounded-2xl font-black uppercase tracking-widest text-[11px] transition-all shadow-2xl relative overflow-hidden group/btn
-                  ${applied === idx 
-                    ? 'bg-emerald-500 text-white shadow-emerald-500/40' 
-                    : 'bg-white text-slate-900 hover:bg-slate-50 hover:shadow-white/20'}`}
-              >
-                <span className="relative z-10">{applied === idx ? '✓ Applied Successfully' : 'Redeem Offer Now'}</span>
-              </motion.button>
             </div>
           </motion.div>
         ))}

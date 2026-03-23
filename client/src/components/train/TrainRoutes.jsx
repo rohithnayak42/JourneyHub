@@ -58,7 +58,7 @@ const routes = [
 ];
 
 const TrainRoutes = () => (
-  <div className="w-full py-20">
+  <div className="block-section">
     <div className="flex flex-col md:flex-row items-end justify-between mb-16 gap-8">
       <div>
         <motion.h2 
@@ -92,16 +92,25 @@ const TrainRoutes = () => (
           {/* HD Visual Header */}
           <div className="relative h-64 overflow-hidden">
             <img 
-              src={route.img} 
+              src={route.img || "https://images.unsplash.com/photo-1474487548417-781cb71495f3?auto=format&fit=crop&w=1920&q=80"} 
               alt={route.name}
+              loading="lazy"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "https://images.unsplash.com/photo-1474487548417-781cb71495f3?auto=format&fit=crop&w=1920&q=80";
+              }}
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent" />
+            {/* Overlay Gradient for consistency */}
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent opacity-80 z-10 pointer-events-none" />
+            
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-60 mix-blend-multiply pointer-events-none" />
             
             <div className="absolute top-6 left-6 flex flex-col gap-2">
               <span className={`${route.badgeColor} text-white text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-xl shadow-xl backdrop-blur-md`}>
                 {route.badge}
               </span>
+
             </div>
 
             <div className="absolute bottom-6 left-8 right-8 flex justify-between items-end">

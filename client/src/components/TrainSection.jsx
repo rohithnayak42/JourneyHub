@@ -19,16 +19,14 @@ const TrainSection = () => {
     >
       <Hero type="train" />
       
-      {/* Main Train Experience Content */}
-      <div className="w-full bg-white text-slate-900 rounded-t-[3rem] relative z-20 -mt-10 overflow-hidden shadow-[0_-20px_50px_rgba(0,0,0,0.15)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 py-12">
-          <TrainTools />
-          <TrainRoutes />
-          <TrainInsights />
-          <TrainStats />
-          <TrainOffers />
-          <TrainFAQ />
-        </div>
+      {/* Replaced full-width overlay with a grid stack layout */}
+      <div className="layout-container relative z-20 -mt-10 md:-mt-20 pb-24 space-y-12">
+        <TrainTools />
+        <TrainRoutes />
+        <TrainInsights />
+        <TrainStats />
+        <TrainOffers />
+        <TrainFAQ />
       </div>
     </motion.div>
   );

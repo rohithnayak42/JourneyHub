@@ -18,7 +18,7 @@ const TrainFAQ = () => {
   const filtered = faqs.filter(f => f.q.toLowerCase().includes(query.toLowerCase()) || f.a.toLowerCase().includes(query.toLowerCase()));
 
   return (
-    <div className="w-full py-24 pb-32">
+    <div className="block-section">
       <div className="flex flex-col md:flex-row items-end justify-between mb-16 gap-8 text-center md:text-left">
         <div className="flex-1">
           <motion.h2 

@@ -11,7 +11,7 @@ const reasons = [
 ];
 
 const HotelWhy = () => (
-  <div className="w-full py-24 bg-slate-950 rounded-[3.5rem] px-10 lg:px-20 relative overflow-hidden group shadow-[0_50px_100px_rgba(0,0,0,0.5)] border border-white/5">
+  <div className="relative overflow-hidden group shadow-xl border border-white/5 bg-slate-950 rounded-[24px] p-6 md:p-12 mb-12">
     {/* Cinematic Background Glow */}
     <div className="absolute inset-0 opacity-40 pointer-events-none">
       <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-rose-600/20 rounded-full blur-[120px] animate-pulse" />

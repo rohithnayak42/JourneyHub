@@ -61,9 +61,8 @@ const StatCard = ({ icon: Icon, value, label, prefix = "", suffix = "+", progres
 
 const BusStats = () => {
   return (
-    <section className="py-24 bg-slate-50 relative overflow-hidden">
-      
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
+    <div className="block-section !bg-slate-50">
+      <div className="relative z-10">
         <div className="text-center mb-20">
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
@@ -97,7 +96,7 @@ const BusStats = () => {
           <StatCard icon={HeartHandshake} value={5} prefix="" suffix="Cr+" label="Happy Travelers" progress={95} />
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 

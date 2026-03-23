@@ -42,10 +42,10 @@ const BusFAQ = () => {
   }, [searchQuery]);
 
   return (
-    <section className="py-24 bg-slate-50 relative">
+    <div className="block-section !bg-slate-50 relative">
       <div className="absolute inset-0 bg-gradient-to-t from-white to-transparent pointer-events-none" />
       
-      <div className="max-w-4xl mx-auto px-6 relative z-10">
+      <div className="max-w-4xl mx-auto relative z-10">
         
         <div className="text-center mb-12">
           <motion.div 
@@ -155,9 +155,8 @@ const BusFAQ = () => {
             )}
           </AnimatePresence>
         </div>
-
       </div>
-    </section>
+    </div>
   );
 };
 

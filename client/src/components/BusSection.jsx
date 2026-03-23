@@ -20,17 +20,15 @@ const BusSection = () => {
     >
       <Hero type="bus" />
 
-      {/* Main Bus Experience Content wrapping below the fold */}
-      <div className="w-full bg-white text-slate-900 rounded-t-[3.5rem] relative z-20 -mt-24 overflow-hidden shadow-[0_-30px_60px_rgba(0,0,0,0.2)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 py-12">
-          <BusOffers />
-          <BusRecommendations />
-          <BusRoutes />
-          <BusTracking />
-          <SeatPreview />
-          <BusStats />
-          <BusFAQ />
-        </div>
+      {/* Replaced full-width overlay with a grid stack layout */}
+      <div className="layout-container relative z-20 -mt-10 md:-mt-20 pb-24 space-y-12">
+        <BusOffers />
+        <BusRecommendations />
+        <BusRoutes />
+        <BusTracking />
+        <SeatPreview />
+        <BusStats />
+        <BusFAQ />
       </div>
     </motion.div>
   );

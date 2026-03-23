@@ -55,8 +55,7 @@ const routesData = [
 
 const BusRoutes = () => {
   return (
-    <section className="py-24 bg-white">
-      <div className="max-w-7xl mx-auto px-6">
+    <div className="block-section">
         
         <div className="flex flex-col md:flex-row justify-between items-end mb-20">
           <div>
@@ -160,8 +159,7 @@ const BusRoutes = () => {
             </motion.div>
           ))}
         </motion.div>
-      </div>
-    </section>
+    </div>
   );
 };
 

@@ -43,7 +43,7 @@ const routes = [
 
 const FlightRoutes = () => {
   return (
-    <div className="w-full py-20">
+    <div className="block-section">
       <div className="flex flex-col md:flex-row items-end justify-between mb-16 gap-8">
         <div>
           <motion.h2 
@@ -77,11 +77,16 @@ const FlightRoutes = () => {
           >
             {/* Cinematic Image Banner */}
             <div className="h-60 w-full relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent z-10" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent z-10 pointer-events-none" />
               <img 
-                src={route.image} 
+                src={route.image || "https://images.unsplash.com/photo-1436491865332-7a61f114f509?auto=format&fit=crop&w=1920&q=80"} 
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" 
                 alt={`${route.to}`} 
+                loading="lazy"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "https://images.unsplash.com/photo-1436491865332-7a61f114f509?auto=format&fit=crop&w=1920&q=80";
+                }}
               />
               
               {/* Premium Badge */}

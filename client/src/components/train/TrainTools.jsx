@@ -56,7 +56,7 @@ const TrainTools = () => {
   };
 
   return (
-    <div className="w-full py-20">
+    <div className="block-section">
       <div className="mb-14">
         <motion.h2 
           initial={{ opacity: 0, y: 20 }}

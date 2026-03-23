@@ -4,22 +4,22 @@ import SearchBar from '../search/SearchBar';
 
 const heros = {
   bus: {
-    bg: "/src/assets/bus-hero-hd.jpg",
+    bg: "/src/assets/bus-hero-final.png",
     heading: "India's No.1 Online Bus Ticket Booking",
     subtext: "Safe, reliable, and comfortable journeys across 10,000+ routes."
   },
   train: {
-    bg: "/src/assets/train-hero-hd.png",
+    bg: "/src/assets/train-hero-final.png",
     heading: "Seamless Train Ticket Reservations",
     subtext: "Experience the magic of rail travel with hassle-free booking."
   },
   flight: {
-    bg: "/src/assets/flight-hero-hd.png",
+    bg: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=2560",
     heading: "Fly Higher with Exclusive Flight Deals",
     subtext: "Explore the world with unbeatable prices and premium comfort."
   },
   hotel: {
-    bg: "/src/assets/hotel-hero-hd.png",
+    bg: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=2560",
     heading: "Find Your Perfect Stay Anywhere",
     subtext: "Luxury hotels, cozy homestays, and affordable rooms worldwide."
   }
@@ -56,7 +56,7 @@ const Hero = ({ type }) => {
       <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/80 via-black/40 to-black/80 pointer-events-none" />
 
       {/* 🎨 Centered Premium Content (z-20) */}
-      <div className="relative z-20 w-full max-w-6xl mx-auto px-6 flex flex-col items-center justify-center text-center">
+      <div className="layout-container relative z-20 flex flex-col items-center justify-center text-center">
         
         {/* Typography */}
         <motion.div

@@ -22,16 +22,16 @@ const Home = () => {
   }, [location.search]);
 
   const backgrounds = {
-    bus: "/src/assets/bus-hero-hd.jpg",
-    train: "/src/assets/train-hero-hd.png",
-    flight: "/src/assets/flight-hero-hd.png",
-    hotel: "/src/assets/hotel-hero-hd.png"
+    bus: "/src/assets/bus-hero-final.png",
+    train: "/src/assets/train-hero-final.png",
+    flight: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=2560",
+    hotel: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=2560"
   };
 
   const bgImage = backgrounds[activeTab];
 
   return (
-    <div className="min-h-screen bg-slate-900 flex flex-col font-sans">
+    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
       <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
       
       {/* Dynamic Sections (Each handles its own Hero & Features) */}

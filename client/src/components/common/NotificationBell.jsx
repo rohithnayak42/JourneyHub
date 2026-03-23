@@ -26,7 +26,7 @@ const NotificationBell = () => {
     <div className="relative" ref={containerRef}>
       <button 
          onClick={() => setIsOpen(!isOpen)}
-         className="relative p-2 text-gray-500 hover:text-blue-600 transition-colors bg-gray-50 hover:bg-blue-50 rounded-full border border-gray-100 mt-1 md:mt-0"
+         className="relative p-2 text-gray-500 hover:text-blue-600 transition-colors bg-white hover:bg-blue-50 rounded-full border border-gray-100 shadow-sm hover:shadow-md"
       >
          <Bell size={20} />
          <span className="absolute top-0 right-1 w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>

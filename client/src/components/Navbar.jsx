@@ -79,25 +79,20 @@ const Navbar = ({ activeTab, setActiveTab }) => {
           </div>
 
           {/* RIGHT: Actions (Hidden on Mobile) */}
-          <div className="hidden md:flex items-center space-x-4 lg:space-x-6 shrink-0 pt-2 text-sm">
-            <Link to="/" className="text-gray-600 hover:text-red-500 font-bold flex items-center gap-1.5 transition-colors">
-              <Search size={18} />
-              <span className="hidden lg:inline">Explore</span>
-            </Link>
-            
+          <div className="hidden md:flex items-center gap-4 lg:gap-6 shrink-0 text-sm">
             {user ? (
               <>
                 <Link to="/dashboard" className="text-gray-600 hover:text-red-500 font-bold flex items-center gap-1.5 transition-colors">
                   <History size={18} />
                   <span className="hidden lg:inline">My Bookings</span>
                 </Link>
-                <div className="-mr-2"><NotificationBell /></div>
+                <NotificationBell />
                 <div className="relative group">
-                  <button className="flex items-center space-x-2 bg-gray-50 px-3 lg:px-4 py-1.5 rounded-full border border-gray-200 hover:border-red-200 transition-all">
-                    <div className="bg-red-50 p-1 rounded-full text-red-500 border border-red-100">
+                  <button className="flex items-center gap-3 bg-white hover:bg-gray-50 px-3 lg:px-4 py-2 rounded-full border border-gray-200 hover:border-red-200 hover:shadow-md transition-all duration-300">
+                    <div className="bg-red-50 p-1.5 rounded-full text-red-500 border border-red-100 shadow-sm">
                       <User size={16} />
                     </div>
-                    <span className="font-black text-gray-700 max-w-[80px] lg:max-w-[100px] truncate">{user.name}</span>
+                    <span className="font-bold text-gray-700 max-w-[80px] lg:max-w-[100px] truncate">{user.name}</span>
                   </button>
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-right">
                     <div className="p-2">
@@ -113,11 +108,11 @@ const Navbar = ({ activeTab, setActiveTab }) => {
                 </div>
               </>
             ) : (
-              <div className="flex items-center space-x-3 lg:space-x-4">
-                <Link to="/login" className="text-gray-600 font-bold hover:text-red-500 transition-colors">
+              <div className="flex items-center gap-4 lg:gap-6">
+                <Link to="/login" className="text-gray-600 font-bold hover:text-red-500 transition-colors px-2 py-1">
                   Login
                 </Link>
-                <Link to="/register" className="bg-blue-600 hover:bg-blue-700 text-white px-4 lg:px-5 py-2.5 rounded-full font-black transition-all shadow-[0_4px_10px_rgba(37,99,235,0.3)] hover:shadow-lg hover:-translate-y-0.5">
+                <Link to="/register" className="bg-blue-600 hover:bg-blue-700 text-white px-6 lg:px-8 py-2.5 rounded-full font-bold transition-all shadow-[0_4px_12px_rgba(37,99,235,0.25)] hover:shadow-lg hover:-translate-y-0.5">
                   Register
                 </Link>
               </div>
@@ -155,8 +150,6 @@ const Navbar = ({ activeTab, setActiveTab }) => {
                 </button>
              ))}
           </div>
-          
-          <Link to="/" onClick={() => setMenuOpen(false)} className="block px-3 py-3 text-gray-700 font-bold border-b border-gray-50 flex items-center gap-2 hover:text-red-500 transition-colors"><Search size={18}/> Explore</Link>
           
           {user ? (
             <>

@@ -67,14 +67,14 @@ const Navbar = ({ activeTab, setActiveTab }) => {
                      {tab.label}
                    </span>
                    
-                   {/* Active Underline Indicator (Sliding with layoutId) */}
-                   {isActive && (
-                     <motion.div 
-                       layoutId="activeTabUnderline"
-                       className="absolute bottom-0 left-0 right-0 h-[4px] bg-red-500 rounded-t-lg shadow-[0_-4px_12px_rgba(239,68,68,0.4)]"
-                       transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                     />
-                   )}
+                    {/* Active Underline Indicator (300ms transition as requested) */}
+                    {isActive && (
+                      <motion.div 
+                        layoutId="activeTabUnderline"
+                        className="absolute bottom-0 left-0 right-0 h-[2px] bg-red-600 shadow-[0_-2px_10px_rgba(220,38,38,0.3)]"
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                      />
+                    )}
                  </button>
                );
              })}

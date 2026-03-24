@@ -3,41 +3,41 @@ import SearchBar from '../search/SearchBar';
 
 const heros = {
   bus: {
-    bg: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&q=80&w=2560",
+    bg: "/images/bus-image.png",
     heading: "India's No.1 Online Bus Ticket Booking",
     subtext: "Safe, reliable, and comfortable journeys across 10,000+ routes.",
-    overlay: "bg-gradient-to-b from-black/70 via-red-900/20 to-slate-900"
+    overlay: "from-black/40 to-black/60"
   },
   train: {
-    bg: "https://images.unsplash.com/photo-1474487548417-781cb71495f3?auto=format&fit=crop&q=80&w=2560",
+    bg: "/images/train-image-1.png",
     heading: "Seamless Train Ticket Reservations",
     subtext: "Experience the magic of rail travel with hassle-free booking.",
-    overlay: "bg-gradient-to-b from-black/70 via-emerald-900/20 to-slate-900"
+    overlay: "from-black/50 to-black/70"
   },
   flight: {
-    bg: "https://images.unsplash.com/photo-1464037862644-417b75735410?auto=format&fit=crop&q=80&w=2560",
+    bg: "/images/flight-image.png",
     heading: "Fly Higher with Exclusive Flight Deals",
     subtext: "Explore the world with unbeatable prices and premium comfort.",
-    overlay: "bg-gradient-to-b from-black/70 via-blue-900/20 to-slate-900"
+    overlay: "from-black/40 to-black/60"
   },
   hotel: {
-    bg: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&q=80&w=2560",
+    bg: "/images/hotel-image.png",
     heading: "Find Your Perfect Stay Anywhere",
     subtext: "Luxury hotels, cozy homestays, and affordable rooms worldwide.",
-    overlay: "bg-gradient-to-b from-black/70 via-purple-900/20 to-slate-900"
+    overlay: "from-black/40 to-black/60"
   }
 };
 
 const Hero = ({ type }) => {
   const config = heros[type] || heros.bus;
+  const isTrain = type === 'train';
 
   return (
-    <div className="relative min-h-[95vh] w-full flex items-center justify-center z-[40] bg-slate-900 pb-32">
+    <div className={`relative ${isTrain ? 'min-h-screen' : 'min-h-[95vh]'} w-full flex items-center justify-center z-[40] bg-slate-900 pb-32 transition-all duration-700`}>
       
-      {/* 🏙️ Clipped Background Wrapper (To maintain Ken Burns within 95vh) */}
+      {/* 🏙️ Parallax Background Wrapper */}
       <div className="absolute inset-0 overflow-hidden z-0">
         <AnimatePresence mode="wait">
-          {/* 🏙️ Ken Burns HD Background Layer with Cross-fade */}
           <motion.div
             key={type}
             className="absolute inset-0"
@@ -49,30 +49,36 @@ const Hero = ({ type }) => {
             exit={{ opacity: 0, scale: 1.05 }}
             transition={{
               opacity: { duration: 0.8 },
-              scale: { duration: 25, repeat: Infinity, repeatType: "reverse", ease: "linear" }
+              scale: { 
+                duration: isTrain ? 12 : 10, 
+                repeat: Infinity, 
+                repeatType: "reverse", 
+                ease: "easeInOut" 
+              }
             }}
             style={{
               backgroundImage: `url(${config.bg})`,
               backgroundSize: "cover",
               backgroundPosition: "center",
-              backgroundRepeat: "no-repeat"
+              backgroundRepeat: "no-repeat",
+              backgroundAttachment: "fixed" // 🔥 Parallax Effect
             }}
           />
         </AnimatePresence>
       </div>
 
-      {/* 🌙 Production-Grade Dynamic Overlay */}
-      <div className={`absolute inset-0 z-10 ${config.overlay} opacity-80 pointer-events-none transition-all duration-1000`} />
+      {/* 🌙 Enhanced Gradient Overlay (Requested for professional look) */}
+      <div className={`absolute inset-0 z-10 bg-gradient-to-b ${config.overlay} pointer-events-none transition-all duration-1000`} />
 
       {/* 🎨 Centered Premium Content (z-20) */}
       <div className="layout-container relative z-20 flex flex-col items-center justify-center text-center w-full px-4">
         
-        {/* Typography */}
+        {/* Typography with Page-Enter Style Animation */}
         <motion.div
           key={`text-${type}`}
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease: "easeOut" }}
+          transition={{ duration: 0.6, ease: "easeInOut" }}
           className="mb-12 mt-12 md:mt-0"
         >
           <h1 className="text-4xl md:text-7xl font-black text-white tracking-tighter leading-[1.1]">
@@ -86,15 +92,15 @@ const Hero = ({ type }) => {
           </p>
         </motion.div>
 
-        {/* 🚀 Glassmorphism Smart Search Bar Container */}
+        {/* 🚀 Smart Search Bar Container */}
         <motion.div
           key={`search-${type}`}
           initial={{ opacity: 0, scale: 0.95, y: 40 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+          transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
           className="w-full relative z-30"
         >
-          <div className={`w-full overflow-visible transition-all duration-500 ${type === 'bus' ? 'bg-white/5 backdrop-blur-xl rounded-[2.5rem] p-1 border border-white/10 shadow-[0_30px_100px_rgba(0,0,0,0.6)] hover:border-white/20' : 'bg-white/10 backdrop-blur-xl rounded-[3.5rem] p-2 border border-white/20 shadow-[0_30px_100px_rgba(0,0,0,0.6)] group hover:border-white/30'}`}>
+          <div className="w-full overflow-visible bg-white/10 backdrop-blur-xl rounded-[3.5rem] p-2 border border-white/20 shadow-[0_30px_100px_rgba(0,0,0,0.6)] group hover:border-white/30 transition-all duration-500">
             <SearchBar type={type} />
           </div>
         </motion.div>

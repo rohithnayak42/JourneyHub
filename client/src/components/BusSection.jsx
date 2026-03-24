@@ -21,7 +21,7 @@ const containerVariants = {
 };
 
 const itemVariants = {
-  hidden: { y: 30, opacity: 0 },
+  hidden: { y: 50, opacity: 0 },
   visible: { 
     y: 0, 
     opacity: 1,
@@ -32,20 +32,20 @@ const itemVariants = {
 const BusSection = () => {
   return (
     <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.6, ease: "easeInOut" }}
       className="w-full flex flex-col items-center"
     >
       <Hero type="bus" />
 
-      {/* 🔹 Staggered Content Section */}
+      {/* 🔹 Staggered Content Section with Scroll Reveal */}
       <motion.div 
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
+        viewport={{ once: true, margin: "-50px" }}
         className="w-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-16 md:py-24"
       >
         <div className="layout-container relative z-20 space-y-24">

@@ -48,63 +48,67 @@ const SearchBar = ({ type = 'bus' }) => {
     <div className="w-full max-w-6xl mx-auto px-4">
       <div className="bg-white rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.08)] border border-gray-50 flex flex-col md:flex-row items-stretch overflow-visible group">
         
-        {/* From Section */}
-        <div ref={fromRef} className="flex-1 relative p-4 group cursor-pointer border-r border-gray-100 hover:bg-gray-50 transition-colors rounded-l-[2rem]">
-          <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1 px-3">
-            {type === 'hotel' ? 'Location' : 'From'}
-          </p>
-          <div className="flex items-center gap-3 px-3" onClick={() => setShowFromDropdown(true)}>
-             <MapPin size={22} className="text-primary group-hover:scale-110 transition-transform" />
-             <input 
-              type="text" 
-              placeholder={type === 'hotel' ? "City or Hotel Name" : "Source City"}
-              value={from}
-              readOnly
-              className="bg-transparent border-none outline-none text-xl font-black text-gray-800 w-full placeholder:text-gray-300 cursor-pointer"
-             />
-          </div>
-          <LocationDropdown 
-            isOpen={showFromDropdown} 
-            locations={locations} 
-            onSelect={(loc) => { setFrom(loc); setShowFromDropdown(false); }} 
-            anchorRef={fromRef}
-          />
-        </div>
-
-        {/* Swap Button */}
-        {type !== 'hotel' && (
-          <div className="absolute left-[calc(50%-180px)] top-1/2 -translate-y-1/2 z-30 hidden lg:block">
-             <button 
-              onClick={swapLocations}
-              className="bg-white border border-gray-100 p-2.5 rounded-full shadow-lg hover:shadow-primary/20 hover:border-primary transition-all text-primary"
-             >
-                <ArrowRightLeft size={16} />
-             </button>
-          </div>
-        )}
-
-        {/* To Section */}
-        {type !== 'hotel' && (
-          <div ref={toRef} className="flex-1 relative p-4 group cursor-pointer border-r border-gray-100 hover:bg-gray-50 transition-colors">
-            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1 px-3">To</p>
-            <div className="flex items-center gap-3 px-3" onClick={() => setShowToDropdown(true)}>
-               <MapPin size={22} className="text-secondary group-hover:scale-110 transition-transform" />
+        {/* Location Group */}
+        <div className={`flex flex-col md:flex-row items-center gap-4 ${type !== 'hotel' ? 'flex-[2]' : 'flex-[1]'} border-b md:border-b-0 md:border-r border-gray-100 p-2 md:p-0`}>
+          
+          {/* From Section */}
+          <div ref={fromRef} className={`flex-1 w-full relative p-4 group cursor-pointer hover:bg-gray-50 transition-colors ${type === 'hotel' ? 'rounded-[2rem]' : 'rounded-t-[2rem] md:rounded-t-none md:rounded-l-[2rem]'}`}>
+            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1 px-3">
+              {type === 'hotel' ? 'Location' : 'From'}
+            </p>
+            <div className="flex items-center gap-3 px-3" onClick={() => setShowFromDropdown(true)}>
+               <MapPin size={22} className="text-primary group-hover:scale-110 transition-transform" />
                <input 
                 type="text" 
-                placeholder="Destination City" 
-                value={to}
+                placeholder={type === 'hotel' ? "City or Hotel Name" : "Source City"}
+                value={from}
                 readOnly
                 className="bg-transparent border-none outline-none text-xl font-black text-gray-800 w-full placeholder:text-gray-300 cursor-pointer"
                />
             </div>
             <LocationDropdown 
-              isOpen={showToDropdown} 
+              isOpen={showFromDropdown} 
               locations={locations} 
-              onSelect={(loc) => { setTo(loc); setShowToDropdown(false); }} 
-              anchorRef={toRef}
+              onSelect={(loc) => { setFrom(loc); setShowFromDropdown(false); }} 
+              anchorRef={fromRef}
             />
           </div>
-        )}
+
+          {/* Swap Button */}
+          {type !== 'hotel' && (
+            <div className="flex items-center justify-center z-30">
+               <button 
+                onClick={swapLocations}
+                className="bg-white border border-gray-100 p-2.5 rounded-full shadow-lg hover:shadow-primary/20 hover:border-primary transition-all text-primary"
+               >
+                  <ArrowRightLeft size={16} className="rotate-90 md:rotate-0" />
+               </button>
+            </div>
+          )}
+
+          {/* To Section */}
+          {type !== 'hotel' && (
+            <div ref={toRef} className="flex-1 w-full relative p-4 group cursor-pointer hover:bg-gray-50 transition-colors">
+              <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1 px-3">To</p>
+              <div className="flex items-center gap-3 px-3" onClick={() => setShowToDropdown(true)}>
+                 <MapPin size={22} className="text-secondary group-hover:scale-110 transition-transform" />
+                 <input 
+                  type="text" 
+                  placeholder="Destination City" 
+                  value={to}
+                  readOnly
+                  className="bg-transparent border-none outline-none text-xl font-black text-gray-800 w-full placeholder:text-gray-300 cursor-pointer"
+                 />
+              </div>
+              <LocationDropdown 
+                isOpen={showToDropdown} 
+                locations={locations} 
+                onSelect={(loc) => { setTo(loc); setShowToDropdown(false); }} 
+                anchorRef={toRef}
+              />
+            </div>
+          )}
+        </div>
 
         {/* Date Section */}
         <DatePicker value={date} onChange={setDate} />

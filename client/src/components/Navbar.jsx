@@ -28,9 +28,8 @@ const Navbar = ({ activeTab, setActiveTab }) => {
      if (setActiveTab) {
        setActiveTab(tabId);
      }
-     if (location.pathname !== '/') {
-        navigate('/?tab=' + tabId);
-     }
+     // Always update the URL search params so the state is persistent on refresh
+     navigate('/?tab=' + tabId);
   };
 
   return (

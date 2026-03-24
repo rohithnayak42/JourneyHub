@@ -39,31 +39,36 @@ const TrainSearchBar = () => {
     >
       <div className="backdrop-blur-xl bg-white/20 rounded-[2rem] shadow-[0_30px_60px_rgba(0,0,0,0.3)] border border-white/40 flex flex-col md:flex-row items-stretch group overflow-visible">
         
-        {/* From Section */}
-        <div ref={fromRef} className="flex-1 relative p-4 md:p-5 group cursor-pointer border-b md:border-b-0 md:border-r border-white/20 hover:bg-white/10 transition-colors rounded-t-[2rem] md:rounded-l-[2rem] md:rounded-tr-none">
-          <p className="text-[10px] font-black text-white/80 uppercase tracking-[0.2em] mb-1 px-3">From Station</p>
-          <div className="flex items-center gap-3 px-3" onClick={() => setShowFromDropdown(true)}>
-             <MapPin size={22} className="text-white group-hover:scale-110 transition-transform" />
-             <input type="text" value={from} readOnly className="bg-transparent border-none outline-none text-xl md:text-2xl font-black text-white w-full placeholder:text-white/50 cursor-pointer drop-shadow-md" />
+        {/* Location Group */}
+        <div className="flex flex-col md:flex-row items-center gap-4 flex-[2] border-b md:border-b-0 md:border-r border-white/20 p-2 md:p-0">
+          
+          {/* From Section */}
+          <div ref={fromRef} className="flex-1 w-full relative p-4 md:p-5 group cursor-pointer hover:bg-white/10 transition-colors rounded-[1rem] md:rounded-none md:rounded-l-[2rem]">
+            <p className="text-[10px] font-black text-white/80 uppercase tracking-[0.2em] mb-1 px-3">From Station</p>
+            <div className="flex items-center gap-3 px-3" onClick={() => setShowFromDropdown(true)}>
+               <MapPin size={22} className="text-white group-hover:scale-110 transition-transform" />
+               <input type="text" value={from} readOnly className="bg-transparent border-none outline-none text-xl md:text-2xl font-black text-white w-full placeholder:text-white/50 cursor-pointer drop-shadow-md" />
+            </div>
+            <LocationDropdown isOpen={showFromDropdown} locations={locations} onSelect={(loc) => { setFrom(loc); setShowFromDropdown(false); }} anchorRef={fromRef} title="Popular Stations" />
           </div>
-          <LocationDropdown isOpen={showFromDropdown} locations={locations} onSelect={(loc) => { setFrom(loc); setShowFromDropdown(false); }} anchorRef={fromRef} title="Popular Stations" />
-        </div>
 
-        {/* Swap Button */}
-        <div className="absolute left-[calc(50%-168px)] top-1/2 -translate-y-1/2 z-50 hidden lg:block">
-           <button onClick={swapLocations} className="bg-white/30 backdrop-blur-md border border-white/40 p-3 rounded-full shadow-xl hover:bg-white/50 hover:-rotate-180 transition-all duration-300 text-white">
-              <ArrowRightLeft size={16} />
-           </button>
-        </div>
-
-        {/* To Section */}
-        <div ref={toRef} className="flex-1 relative p-4 md:p-5 group cursor-pointer border-b md:border-b-0 md:border-r border-white/20 hover:bg-white/10 transition-colors">
-          <p className="text-[10px] font-black text-white/80 uppercase tracking-[0.2em] mb-1 px-3">To Station</p>
-          <div className="flex items-center gap-3 px-3" onClick={() => setShowToDropdown(true)}>
-             <MapPin size={22} className="text-red-400 group-hover:scale-110 transition-transform" />
-             <input type="text" value={to} readOnly className="bg-transparent border-none outline-none text-xl md:text-2xl font-black text-white w-full placeholder:text-white/50 cursor-pointer drop-shadow-md" />
+          {/* Swap Button */}
+          <div className="flex items-center justify-center z-50">
+             <button onClick={swapLocations} className="bg-white/30 backdrop-blur-md border border-white/40 p-3 rounded-full shadow-xl hover:bg-white/50 hover:rotate-180 transition-all duration-300 text-white">
+                <ArrowRightLeft size={16} className="rotate-90 md:rotate-0" />
+             </button>
           </div>
-          <LocationDropdown isOpen={showToDropdown} locations={locations} onSelect={(loc) => { setTo(loc); setShowToDropdown(false); }} anchorRef={toRef} title="Popular Stations" />
+
+          {/* To Section */}
+          <div ref={toRef} className="flex-1 w-full relative p-4 md:p-5 group cursor-pointer hover:bg-white/10 transition-colors rounded-[1rem] md:rounded-none">
+            <p className="text-[10px] font-black text-white/80 uppercase tracking-[0.2em] mb-1 px-3">To Station</p>
+            <div className="flex items-center gap-3 px-3" onClick={() => setShowToDropdown(true)}>
+               <MapPin size={22} className="text-red-400 group-hover:scale-110 transition-transform" />
+               <input type="text" value={to} readOnly className="bg-transparent border-none outline-none text-xl md:text-2xl font-black text-white w-full placeholder:text-white/50 cursor-pointer drop-shadow-md" />
+            </div>
+            <LocationDropdown isOpen={showToDropdown} locations={locations} onSelect={(loc) => { setTo(loc); setShowToDropdown(false); }} anchorRef={toRef} title="Popular Stations" />
+          </div>
+
         </div>
 
         {/* Date Section */}

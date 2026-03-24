@@ -1,27 +1,30 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import SearchBar from '../search/SearchBar';
 
 const heros = {
   bus: {
-    bg: "/src/assets/bus-hero-final.png",
+    bg: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&q=80&w=2560",
     heading: "India's No.1 Online Bus Ticket Booking",
-    subtext: "Safe, reliable, and comfortable journeys across 10,000+ routes."
+    subtext: "Safe, reliable, and comfortable journeys across 10,000+ routes.",
+    overlay: "bg-gradient-to-b from-black/70 via-red-900/20 to-slate-900"
   },
   train: {
-    bg: "/src/assets/train-hero-final.png",
+    bg: "https://images.unsplash.com/photo-1474487548417-781cb71495f3?auto=format&fit=crop&q=80&w=2560",
     heading: "Seamless Train Ticket Reservations",
-    subtext: "Experience the magic of rail travel with hassle-free booking."
+    subtext: "Experience the magic of rail travel with hassle-free booking.",
+    overlay: "bg-gradient-to-b from-black/70 via-emerald-900/20 to-slate-900"
   },
   flight: {
-    bg: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=2560",
+    bg: "https://images.unsplash.com/photo-1464037862644-417b75735410?auto=format&fit=crop&q=80&w=2560",
     heading: "Fly Higher with Exclusive Flight Deals",
-    subtext: "Explore the world with unbeatable prices and premium comfort."
+    subtext: "Explore the world with unbeatable prices and premium comfort.",
+    overlay: "bg-gradient-to-b from-black/70 via-blue-900/20 to-slate-900"
   },
   hotel: {
-    bg: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=2560",
+    bg: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&q=80&w=2560",
     heading: "Find Your Perfect Stay Anywhere",
-    subtext: "Luxury hotels, cozy homestays, and affordable rooms worldwide."
+    subtext: "Luxury hotels, cozy homestays, and affordable rooms worldwide.",
+    overlay: "bg-gradient-to-b from-black/70 via-purple-900/20 to-slate-900"
   }
 };
 
@@ -33,30 +36,33 @@ const Hero = ({ type }) => {
       
       {/* 🏙️ Clipped Background Wrapper (To maintain Ken Burns within 95vh) */}
       <div className="absolute inset-0 overflow-hidden z-0">
-        {/* 🏙️ Ken Burns HD Background Layer */}
-        <motion.div
-          key={type}
-          className="absolute inset-0"
-          initial={{ scale: 1.15, opacity: 0 }}
-          animate={{ 
-            scale: 1, 
-            opacity: 1 
-          }}
-          transition={{
-            opacity: { duration: 1.5 },
-            scale: { duration: 20, repeat: Infinity, repeatType: "reverse", ease: "linear" }
-          }}
-          style={{
-            backgroundImage: `url(${config.bg})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat"
-          }}
-        />
+        <AnimatePresence mode="wait">
+          {/* 🏙️ Ken Burns HD Background Layer with Cross-fade */}
+          <motion.div
+            key={type}
+            className="absolute inset-0"
+            initial={{ scale: 1.1, opacity: 0 }}
+            animate={{ 
+              scale: 1, 
+              opacity: 1 
+            }}
+            exit={{ opacity: 0, scale: 1.05 }}
+            transition={{
+              opacity: { duration: 0.8 },
+              scale: { duration: 25, repeat: Infinity, repeatType: "reverse", ease: "linear" }
+            }}
+            style={{
+              backgroundImage: `url(${config.bg})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat"
+            }}
+          />
+        </AnimatePresence>
       </div>
 
-      {/* 🌙 Production-Grade Triple Gradient Overlay */}
-      <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/80 via-black/40 to-black/90 pointer-events-none" />
+      {/* 🌙 Production-Grade Dynamic Overlay */}
+      <div className={`absolute inset-0 z-10 ${config.overlay} opacity-80 pointer-events-none transition-all duration-1000`} />
 
       {/* 🎨 Centered Premium Content (z-20) */}
       <div className="layout-container relative z-20 flex flex-col items-center justify-center text-center w-full px-4">

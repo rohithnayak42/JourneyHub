@@ -36,7 +36,7 @@ const Home = () => {
       
       {/* Dynamic Sections (Each handles its own Hero & Features) */}
       <div className="relative w-full flex flex-col flex-1">
-        <AnimatePresence>
+        <AnimatePresence mode="wait">
           {activeTab === 'bus' && <BusSection key="bus" />}
           {activeTab === 'train' && <TrainSection key="train" />}
           {activeTab === 'flight' && <FlightSection key="flight" />}

@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { User, LogOut, Menu, X, Search, History, Briefcase } from 'lucide-react';
 import NotificationBell from './common/NotificationBell';
 import { FaBus, FaTrain, FaPlane, FaHotel } from 'react-icons/fa';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = ({ activeTab, setActiveTab }) => {
   const { user, logout } = useAuth();
@@ -66,12 +67,14 @@ const Navbar = ({ activeTab, setActiveTab }) => {
                      {tab.label}
                    </span>
                    
-                   {/* Active Underline Indicator */}
-                   <div 
-                     className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-[120%] h-[3px] rounded-t-lg transition-all duration-300 origin-center ${
-                       isActive ? 'bg-red-500 scale-x-100' : 'bg-transparent scale-x-0'
-                     }`}
-                   />
+                   {/* Active Underline Indicator (Sliding with layoutId) */}
+                   {isActive && (
+                     <motion.div 
+                       layoutId="activeTabUnderline"
+                       className="absolute bottom-0 left-0 right-0 h-[4px] bg-red-500 rounded-t-lg shadow-[0_-4px_12px_rgba(239,68,68,0.4)]"
+                       transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                     />
+                   )}
                  </button>
                );
              })}

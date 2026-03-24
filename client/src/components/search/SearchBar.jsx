@@ -89,8 +89,15 @@ const SearchBar = ({ type = 'bus' }) => {
       
       {/* 🔹 MAIN: Single-Line Search Bar */}
       <motion.div 
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
         whileHover={{ scale: 1.015, translateY: -2, boxShadow: "0 40px 80px -15px rgba(0,0,0,0.3)" }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
+        transition={{ 
+          opacity: { duration: 0.6, delay: 0.3 },
+          y: { duration: 0.6, delay: 0.3 },
+          scale: { duration: 0.4 },
+          boxShadow: { duration: 0.4 }
+        }}
         className="bg-white rounded-[2rem] p-2 shadow-[0_20px_50px_rgba(0,0,0,0.06)] border border-gray-100 flex flex-col md:flex-row items-center overflow-visible relative z-10"
       >
         

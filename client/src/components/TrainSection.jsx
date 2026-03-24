@@ -19,15 +19,23 @@ const TrainSection = () => {
     >
       <Hero type="train" />
       
-      {/* Replaced full-width overlay with a grid stack layout */}
-      <div className="layout-container relative z-20 -mt-10 md:-mt-20 pb-24 space-y-12">
-        <TrainTools />
-        <TrainRoutes />
-        <TrainInsights />
-        <TrainStats />
-        <TrainOffers />
-        <TrainFAQ />
-      </div>
+      {/* 🔹 Content Section with Deep Blue Rail Gradient */}
+      <motion.div 
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+        className="w-full bg-gradient-to-br from-[#0a1f44] to-[#1b3a6b] py-16 md:py-24"
+      >
+        <div className="layout-container relative z-20 space-y-20">
+          <TrainTools />
+          <TrainRoutes />
+          <TrainInsights />
+          <TrainStats />
+          <TrainOffers />
+          <TrainFAQ />
+        </div>
+      </motion.div>
     </motion.div>
   );
 };

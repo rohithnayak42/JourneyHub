@@ -29,7 +29,7 @@ const Hero = ({ type }) => {
   const config = heros[type] || heros.bus;
 
   return (
-    <div className="relative h-[95vh] w-full flex items-center justify-center z-[40] bg-slate-900">
+    <div className="relative min-h-[95vh] w-full flex items-center justify-center z-[40] bg-slate-900 pb-32">
       
       {/* 🏙️ Clipped Background Wrapper (To maintain Ken Burns within 95vh) */}
       <div className="absolute inset-0 overflow-hidden z-0">
@@ -56,10 +56,10 @@ const Hero = ({ type }) => {
       </div>
 
       {/* 🌙 Production-Grade Triple Gradient Overlay */}
-      <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/80 via-black/40 to-black/80 pointer-events-none" />
+      <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/80 via-black/40 to-black/90 pointer-events-none" />
 
       {/* 🎨 Centered Premium Content (z-20) */}
-      <div className="layout-container relative z-20 flex flex-col items-center justify-center text-center">
+      <div className="layout-container relative z-20 flex flex-col items-center justify-center text-center w-full px-4">
         
         {/* Typography */}
         <motion.div
@@ -67,7 +67,7 @@ const Hero = ({ type }) => {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: "easeOut" }}
-          className="mb-12"
+          className="mb-12 mt-12 md:mt-0"
         >
           <h1 className="text-4xl md:text-7xl font-black text-white tracking-tighter leading-[1.1]">
             {config.heading.split(' ').slice(0, -2).join(' ')} <br className="hidden md:block" />
@@ -88,7 +88,7 @@ const Hero = ({ type }) => {
           transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
           className="w-full relative z-30"
         >
-          <div className={`w-full overflow-visible ${type === 'bus' ? '' : 'bg-white/5 backdrop-blur-3xl rounded-[3.5rem] p-2 border border-white/10 shadow-[0_30px_100px_rgba(0,0,0,0.6)] group hover:border-white/20 transition-all duration-500'}`}>
+          <div className={`w-full overflow-visible transition-all duration-500 ${type === 'bus' ? 'bg-white/5 backdrop-blur-xl rounded-[2.5rem] p-1 border border-white/10 shadow-[0_30px_100px_rgba(0,0,0,0.6)] hover:border-white/20' : 'bg-white/10 backdrop-blur-xl rounded-[3.5rem] p-2 border border-white/20 shadow-[0_30px_100px_rgba(0,0,0,0.6)] group hover:border-white/30'}`}>
             <SearchBar type={type} />
           </div>
         </motion.div>

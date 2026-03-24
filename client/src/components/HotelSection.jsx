@@ -20,16 +20,24 @@ const HotelSection = () => {
     >
       <Hero type="hotel" />
       
-      {/* Replaced full-width overlay with a grid stack layout */}
-      <div className="layout-container relative z-20 -mt-10 md:-mt-20 pb-24 space-y-12">
-          <HotelDeals />
-          <HotelOffers />
-          <HotelWhy />
-          <HotelDestinations />
-          <HotelRecommendations />
-          <HotelStats />
-          <HotelFAQ />
-      </div>
+      {/* 🔹 Content Section with Luxury Purple Gradient */}
+      <motion.div 
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+        className="w-full bg-gradient-to-br from-[#3b0764] to-[#9333ea] py-16 md:py-24"
+      >
+        <div className="layout-container relative z-20 space-y-20">
+            <HotelDeals />
+            <HotelOffers />
+            <HotelWhy />
+            <HotelDestinations />
+            <HotelRecommendations />
+            <HotelStats />
+            <HotelFAQ />
+        </div>
+      </motion.div>
     </motion.div>
   );
 };

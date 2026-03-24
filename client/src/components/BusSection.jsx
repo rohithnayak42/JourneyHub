@@ -20,16 +20,24 @@ const BusSection = () => {
     >
       <Hero type="bus" />
 
-      {/* Replaced full-width overlay with a grid stack layout */}
-      <div className="layout-container relative z-20 -mt-10 md:-mt-20 pb-24 space-y-12">
-        <BusOffers />
-        <BusRecommendations />
-        <BusRoutes />
-        <BusTracking />
-        <SeatPreview />
-        <BusStats />
-        <BusFAQ />
-      </div>
+      {/* 🔹 Content Section with Premium Dark Gradient */}
+      <motion.div 
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+        className="w-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-16 md:py-24"
+      >
+        <div className="layout-container relative z-20 space-y-20">
+          <BusOffers />
+          <BusRecommendations />
+          <BusRoutes />
+          <BusTracking />
+          <SeatPreview />
+          <BusStats />
+          <BusFAQ />
+        </div>
+      </motion.div>
     </motion.div>
   );
 };

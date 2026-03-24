@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MapPin, ArrowRightLeft, Search, Calendar, Users, Briefcase, ChevronRight, Info } from 'lucide-react';
+import { motion } from 'framer-motion';
 import LocationDropdown from './LocationDropdown';
 import DatePicker from './DatePicker';
 import { ClassDropdown, PassengerDropdown, GuestDropdown } from './SearchDropdowns';
@@ -87,7 +88,11 @@ const SearchBar = ({ type = 'bus' }) => {
     <div className="w-full max-w-7xl mx-auto px-4 py-8 relative">
       
       {/* 🔹 MAIN: Single-Line Search Bar */}
-      <div className="bg-white rounded-[2rem] p-2 shadow-[0_20px_50px_rgba(0,0,0,0.06)] border border-gray-100 flex flex-col md:flex-row items-center overflow-visible">
+      <motion.div 
+        whileHover={{ scale: 1.015, translateY: -2, boxShadow: "0 40px 80px -15px rgba(0,0,0,0.3)" }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+        className="bg-white rounded-[2rem] p-2 shadow-[0_20px_50px_rgba(0,0,0,0.06)] border border-gray-100 flex flex-col md:flex-row items-center overflow-visible relative z-10"
+      >
         
         {/* Group 1: From + Swap + To */}
         <div className="flex-[2] w-full flex flex-col md:flex-row items-center relative group/group1">
@@ -213,7 +218,7 @@ const SearchBar = ({ type = 'bus' }) => {
            </button>
         </div>
 
-      </div>
+      </motion.div>
     </div>
   );
 };

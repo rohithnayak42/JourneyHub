@@ -85,7 +85,7 @@ const Hero = ({ type }) => {
           transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
           className="w-full relative z-30"
         >
-          <div className="w-full bg-white/5 backdrop-blur-3xl rounded-[3.5rem] p-2 border border-white/10 shadow-[0_30px_100px_rgba(0,0,0,0.6)] group hover:border-white/20 transition-all duration-500">
+          <div className={`w-full ${type === 'bus' ? '' : 'bg-white/5 backdrop-blur-3xl rounded-[3.5rem] p-2 border border-white/10 shadow-[0_30px_100px_rgba(0,0,0,0.6)] group hover:border-white/20 transition-all duration-500'}`}>
             <SearchBar type={type} />
           </div>
         </motion.div>

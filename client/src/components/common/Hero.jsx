@@ -29,28 +29,31 @@ const Hero = ({ type }) => {
   const config = heros[type] || heros.bus;
 
   return (
-    <div className="relative h-[95vh] w-full flex items-center justify-center overflow-hidden bg-slate-900">
+    <div className="relative h-[95vh] w-full flex items-center justify-center z-[40] bg-slate-900">
       
-      {/* 🏙️ Ken Burns HD Background Layer */}
-      <motion.div
-        key={type}
-        className="absolute inset-0 z-0"
-        initial={{ scale: 1.15, opacity: 0 }}
-        animate={{ 
-          scale: 1, 
-          opacity: 1 
-        }}
-        transition={{
-          opacity: { duration: 1.5 },
-          scale: { duration: 20, repeat: Infinity, repeatType: "reverse", ease: "linear" }
-        }}
-        style={{
-          backgroundImage: `url(${config.bg})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat"
-        }}
-      />
+      {/* 🏙️ Clipped Background Wrapper (To maintain Ken Burns within 95vh) */}
+      <div className="absolute inset-0 overflow-hidden z-0">
+        {/* 🏙️ Ken Burns HD Background Layer */}
+        <motion.div
+          key={type}
+          className="absolute inset-0"
+          initial={{ scale: 1.15, opacity: 0 }}
+          animate={{ 
+            scale: 1, 
+            opacity: 1 
+          }}
+          transition={{
+            opacity: { duration: 1.5 },
+            scale: { duration: 20, repeat: Infinity, repeatType: "reverse", ease: "linear" }
+          }}
+          style={{
+            backgroundImage: `url(${config.bg})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat"
+          }}
+        />
+      </div>
 
       {/* 🌙 Production-Grade Triple Gradient Overlay */}
       <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/80 via-black/40 to-black/80 pointer-events-none" />
@@ -85,7 +88,7 @@ const Hero = ({ type }) => {
           transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
           className="w-full relative z-30"
         >
-          <div className={`w-full ${type === 'bus' ? '' : 'bg-white/5 backdrop-blur-3xl rounded-[3.5rem] p-2 border border-white/10 shadow-[0_30px_100px_rgba(0,0,0,0.6)] group hover:border-white/20 transition-all duration-500'}`}>
+          <div className={`w-full overflow-visible ${type === 'bus' ? '' : 'bg-white/5 backdrop-blur-3xl rounded-[3.5rem] p-2 border border-white/10 shadow-[0_30px_100px_rgba(0,0,0,0.6)] group hover:border-white/20 transition-all duration-500'}`}>
             <SearchBar type={type} />
           </div>
         </motion.div>

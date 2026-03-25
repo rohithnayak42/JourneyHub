@@ -8,12 +8,13 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import BusResults from './pages/BusResults';
+import BusExperience from './pages/BusExperience';
+import BusSeatSelection from './pages/BusSeatSelection';
 import TrainResults from './pages/TrainResults';
 import FlightResults from './pages/FlightResults';
 import HotelResults from './pages/HotelResults';
 import Dashboard from './pages/Dashboard';
 import BookingPage from './pages/BookingPage';
-import BusExperience from './pages/BusExperience';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/buses" element={<BusResults />} />
+          <Route path="/bus/seat-page" element={<BusSeatSelection />} />
           <Route path="/bus-experience" element={<BusExperience />} />
           <Route path="/trains" element={<TrainResults />} />
           <Route path="/flights" element={<FlightResults />} />

@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React from 'react';
+import { motion } from 'framer-motion';
 import { Star, BusFront, LocateFixed, Eye } from 'lucide-react';
-import SeatSimulator from './SeatSimulator';
+import { useNavigate } from 'react-router-dom';
 
 const BusCard = ({ bus }) => {
-  const [showSeats, setShowSeats] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)] hover:border-red-200 transition-all overflow-hidden flex flex-col group mb-6 relative">
@@ -57,20 +57,15 @@ const BusCard = ({ bus }) => {
             <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Starting from</span>
             <span className="text-3xl md:text-4xl font-black text-red-600 tracking-tight mb-4">₹{bus.price}</span>
             <button 
-               onClick={() => setShowSeats(!showSeats)}
-               className={`shadow-[0_5px_15px_rgba(239,68,68,0.2)] hover:shadow-[0_10px_25px_rgba(239,68,68,0.4)] font-black py-3.5 px-6 rounded-xl transition-all w-full flex items-center justify-center gap-2 group/btn uppercase tracking-widest text-xs border ${showSeats ? 'bg-white text-red-500 border-red-200 hover:bg-gray-50' : 'bg-red-500 hover:bg-red-600 text-white border-red-500'}`}
+               onClick={() => navigate(`/bus/seat-page?bus=${encodeURIComponent(bus.name)}&time=${encodeURIComponent(bus.departure)}&price=${bus.price}&from=${encodeURIComponent(bus.from)}&to=${encodeURIComponent(bus.to)}&type=${encodeURIComponent(bus.type)}`)}
+               className={`shadow-[0_5px_15px_rgba(239,68,68,0.2)] hover:shadow-[0_10px_25px_rgba(239,68,68,0.4)] font-black py-3.5 px-6 rounded-xl transition-all w-full flex items-center justify-center gap-2 group/btn uppercase tracking-widest text-xs border bg-red-500 hover:bg-red-600 text-white border-red-500`}
             >
-               {showSeats ? 'Hide Seats' : 'View Seats'} <Eye size={16} className={`transition-transform duration-500 ${showSeats && 'rotate-180 opacity-50'}`} />
+               View Seats <Eye size={16} className="transition-transform duration-500" />
             </button>
             <span className="text-[10px] font-black text-emerald-500 mt-3 text-center md:text-right w-full bg-emerald-50 py-1 rounded-md">{bus.seatsLeft} Seats Left</span>
          </div>
       </div>
 
-      <AnimatePresence>
-         {showSeats && (
-            <SeatSimulator basePrice={bus.price} onClose={() => setShowSeats(false)} />
-         )}
-      </AnimatePresence>
     </div>
   );
 };

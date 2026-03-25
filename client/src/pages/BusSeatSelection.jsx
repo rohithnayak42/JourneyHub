@@ -102,31 +102,70 @@ const BusSeatSelection = () => {
 
   const isFormValid = passengers.length > 0 && passengers.every(p => p.name.trim() !== '' && p.age !== '' && p.gender !== '' && p.gender !== 'Gender');
 
+  const handleProceed = () => {
+    if (!isFormValid) return;
+
+    const bookingData = {
+      busName,
+      time,
+      price,
+      from,
+      to,
+      busType,
+      selectedSeats,
+      passengers,
+      totalAmount: total
+    };
+
+    localStorage.setItem("busBookingData", JSON.stringify(bookingData));
+    navigate('/bus/boarding');
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
       <Navbar />
 
-      <div className="bg-white border-b border-gray-100 py-6 shadow-sm sticky top-20 z-40">
-        <div className="max-w-7xl mx-auto px-4 flex items-center gap-6">
-          <button 
-            onClick={() => navigate(-1)} 
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-600 hover:text-red-500"
-          >
-            <ArrowLeft size={24} />
-          </button>
-          <div className="flex flex-col">
-            <h1 className="text-2xl font-black text-gray-800 tracking-tight">{busName}</h1>
-            <p className="text-xs font-black text-gray-400 uppercase tracking-widest mt-1">
-              {from} → {to} • {time} • {busType}
-            </p>
-          </div>
-        </div>
+      <div className="bg-gray-900 pt-8 pb-16 px-4 relative">
+         <div className="max-w-7xl mx-auto flex items-center gap-6">
+            <button 
+               onClick={() => navigate('/buses')} 
+               className="p-2 hover:bg-gray-800 rounded-full transition-colors text-gray-400 hover:text-white"
+            >
+               <ArrowLeft size={24} />
+            </button>
+            <div className="flex flex-col flex-1">
+               <h1 className="text-2xl font-black text-white tracking-tight">{busName}</h1>
+               <p className="text-xs font-black text-gray-400 uppercase tracking-widest mt-1">
+               {from} → {to} • {time} • {busType}
+               </p>
+            </div>
+         </div>
+         
+         {/* Stepper */}
+         <div className="max-w-3xl mx-auto mt-8 relative z-10 w-full overflow-hidden">
+            <div className="flex items-center gap-2">
+               <div className="flex items-center gap-2 text-white">
+                  <span className="w-8 h-8 rounded-full flex items-center justify-center text-[12px] font-black bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.5)]">1</span>
+                  <span className="text-sm font-bold uppercase tracking-widest hidden md:block">Seats & Passengers</span>
+               </div>
+               <div className="flex-1 h-[2px] bg-gray-700 mx-4"></div>
+               <div className="flex items-center gap-2 text-gray-500">
+                  <span className="w-8 h-8 rounded-full flex items-center justify-center text-[12px] font-black bg-gray-800 border border-gray-700">2</span>
+                  <span className="text-sm font-bold uppercase tracking-widest hidden md:block">Boarding</span>
+               </div>
+               <div className="flex-1 h-[2px] bg-gray-700 mx-4"></div>
+               <div className="flex items-center gap-2 text-gray-500">
+                  <span className="w-8 h-8 rounded-full flex items-center justify-center text-[12px] font-black bg-gray-800 border border-gray-700">3</span>
+                  <span className="text-sm font-bold uppercase tracking-widest hidden md:block">Payment</span>
+               </div>
+            </div>
+         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8 w-full flex-1">
+      <div className="max-w-7xl mx-auto px-4 w-full flex flex-col lg:flex-row gap-8 relative z-20 -mt-10 mb-16 flex-1">
         
         {/* Left Side: Seat Layout */}
-        <div className="flex-1 bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100 flex flex-col items-center justify-center">
+        <div className="flex-1 bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100 flex flex-col items-center justify-center relative overflow-hidden">
             <h2 className="text-xl font-black text-gray-800 mb-6 drop-shadow-sm text-center w-full">Select Your Seats</h2>
             <div className="flex items-center justify-center w-[320px] mb-6 border-b border-gray-100 pb-6">
                <div className="flex items-center gap-6">
@@ -139,8 +178,8 @@ const BusSeatSelection = () => {
         </div>
 
         {/* Right Side: Details & passenger info */}
-        <div className="flex-1 xl:w-[400px] flex flex-col">
-           <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100 mb-6 flex-1">
+        <div className="flex-1 xl:w-[450px] flex flex-col">
+           <div className="bg-white rounded-[2rem] p-8 shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-100 mb-6 flex-1 flex flex-col">
               <h4 className="font-black text-lg text-gray-800 mb-6 border-b border-gray-100 pb-4">Journey Summary</h4>
               
               <div className="flex flex-col relative z-0 border-l-[3px] border-dashed border-gray-200 ml-4 pl-8 pt-2 pb-4">
@@ -160,26 +199,32 @@ const BusSeatSelection = () => {
                  </div>
               </div>
 
-              <div className="mt-6 p-6 bg-gray-50 rounded-2xl border border-gray-100 flex-1 overflow-y-auto max-h-[300px] custom-scrollbar">
-                  <div className="flex justify-between items-center mb-4">
-                     <h4 className="font-black text-sm text-gray-800 uppercase tracking-widest">Passenger Information</h4>
-                     <span className="text-xs font-bold text-gray-500 bg-white px-2 py-1 rounded border border-gray-200">{selectedSeats.length} Seats Selected</span>
+              <div className="mt-6 p-6 bg-gray-50 rounded-2xl border border-gray-100 flex-1 overflow-y-auto max-h-[350px] custom-scrollbar">
+                  <div className="flex justify-between items-center mb-4 sticky top-0 bg-gray-50 py-2 z-10">
+                     <h4 className="font-black text-sm text-gray-800 uppercase tracking-widest">Passenger Details</h4>
+                     <span className="text-xs font-bold text-gray-500 bg-white px-2 py-1 rounded border border-gray-200 shadow-sm">{selectedSeats.length} Seats</span>
                   </div>
                   
                   {passengers.length === 0 ? (
-                     <p className="text-sm text-gray-500 text-center py-6">Please select your seats on the left to enter passenger details.</p>
+                     <div className="flex flex-col items-center justify-center py-10 opacity-70">
+                        <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mb-4"><span className="text-2xl">💺</span></div>
+                        <p className="text-sm font-bold text-gray-500 text-center">Select your seats on the left<br/>to enter passenger details.</p>
+                     </div>
                   ) : (
-                     <div className="flex flex-col gap-4">
+                     <div className="flex flex-col gap-4 relative z-0">
                         {passengers.map((p, index) => (
-                           <div key={p.seat} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                              <span className="text-xs font-black text-red-500 uppercase tracking-widest mb-3 block">Passenger {index + 1} <span className="text-gray-400 font-bold">(Seat {p.seat})</span></span>
+                           <div key={p.seat} className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 transition-all hover:border-red-200">
+                              <span className="text-xs font-black text-red-500 uppercase tracking-widest mb-4 block flex justify-between">
+                                 Passenger {index + 1} 
+                                 <span className="text-gray-400 bg-gray-50 font-bold px-2 py-0.5 rounded border border-gray-100">Seat {p.seat}</span>
+                              </span>
                               <div className="flex flex-col gap-3">
                                  <input 
                                     type="text" 
-                                    placeholder="Full Name" 
+                                    placeholder="Full Name (as per Govt ID)" 
                                     value={p.name}
                                     onChange={(e) => handlePassengerChange(p.seat, 'name', e.target.value)}
-                                    className="w-full text-sm font-medium bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all" 
+                                    className="w-full text-sm font-bold text-gray-800 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all placeholder:font-medium placeholder:text-gray-400" 
                                  />
                                  <div className="flex gap-3">
                                     <input 
@@ -189,14 +234,14 @@ const BusSeatSelection = () => {
                                        min="1"
                                        max="120"
                                        onChange={(e) => handlePassengerChange(p.seat, 'age', e.target.value)}
-                                       className="w-1/3 text-sm font-medium bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all" 
+                                       className="w-1/3 text-sm font-bold text-gray-800 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all placeholder:font-medium placeholder:text-gray-400" 
                                     />
                                     <select 
                                        value={p.gender || 'Gender'}
                                        onChange={(e) => handlePassengerChange(p.seat, 'gender', e.target.value)}
-                                       className={`w-2/3 text-sm font-medium bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all ${p.gender ? 'text-gray-800' : 'text-gray-400'}`}
+                                       className={`w-2/3 text-sm font-bold border border-gray-200 rounded-lg px-4 py-3 outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all ${p.gender ? 'text-gray-800 bg-gray-50' : 'text-gray-400 bg-white'}`}
                                     >
-                                       <option disabled>Gender</option>
+                                       <option disabled value="Gender">Select Gender</option>
                                        <option value="Male">Male</option>
                                        <option value="Female">Female</option>
                                        <option value="Other">Other</option>
@@ -210,20 +255,26 @@ const BusSeatSelection = () => {
               </div>
            </div>
 
-           <div className="bg-white rounded-[2rem] p-6 shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-gray-100 mt-auto">
-              <div className="flex justify-between items-center mb-3">
+           <div className="bg-white rounded-[2rem] p-8 shadow-[0_10px_30px_rgba(0,0,0,0.04)] border border-gray-100 mt-auto">
+              <div className="flex justify-between items-center mb-4">
                  <span className="text-xs font-black text-gray-400 uppercase tracking-widest">Selected Seats</span>
-                 <span className="text-sm font-black text-gray-800 bg-gray-50 px-3 py-1 rounded-md">{selectedSeats.join(', ') || 'None'}</span>
+                 <span className="text-sm font-black text-gray-800 bg-gray-50 border border-gray-100 px-3 py-1.5 rounded-lg shadow-sm flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-red-500"></span>
+                    {selectedSeats.length > 0 ? selectedSeats.join(', ') : 'None'}
+                 </span>
               </div>
-              <div className="flex justify-between items-end mb-6">
+              <div className="flex justify-between items-end mb-8">
                  <span className="text-xs font-black text-gray-400 uppercase tracking-widest">Total Amount</span>
-                 <span className="text-3xl font-black text-red-600 tracking-tight">₹{total}</span>
+                 <span className="text-4xl font-black text-gray-800 tracking-tight">₹{total}</span>
               </div>
               <button 
-                 className={`w-full py-4 rounded-xl font-black text-white uppercase tracking-widest shadow-md transition-all flex items-center justify-center gap-2 relative overflow-hidden group btn-shine ${isFormValid ? 'bg-red-500 hover:bg-red-600 hover:-translate-y-1 hover:shadow-xl hover:shadow-red-500/30' : 'bg-gray-300 cursor-not-allowed opacity-70'}`}
+                 onClick={handleProceed}
+                 className={`w-full py-4.5 rounded-xl font-black text-white uppercase tracking-widest shadow-lg transition-all flex items-center justify-center gap-2 relative overflow-hidden group btn-shine ${isFormValid ? 'bg-gray-900 hover:bg-black hover:-translate-y-1 hover:shadow-2xl hover:shadow-gray-900/40' : 'bg-gray-200 text-gray-400 cursor-not-allowed border border-gray-300 shadow-none'}`}
                  disabled={!isFormValid}
               >
-                 {isFormValid ? 'Proceed to Pay' : (passengers.length === 0 ? 'Select Seats' : 'Incomplete Details')} {isFormValid && <span className="absolute inset-0 w-full h-full -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:animate-[shine_1.5s_ease-in-out_infinite]"></span>}
+                 {isFormValid ? 'Continue to Boarding' : (passengers.length === 0 ? 'Select Seats to Proceed' : 'Fill All Details')} 
+                 {isFormValid && <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><path d="m9 18 6-6-6-6"/></svg>}
+                 {isFormValid && <span className="absolute inset-0 w-full h-full -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:animate-[shine_1.5s_ease-in-out_infinite]"></span>}
               </button>
            </div>
         </div>

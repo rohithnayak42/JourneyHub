@@ -23,7 +23,7 @@ const Home = () => {
 
   const backgrounds = {
     bus: "/src/assets/bus-hero-final.png",
-    train: "/src/assets/train-hero-final.png",
+    train: "/images/train-image-1.png",
     flight: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=2560",
     hotel: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=2560"
   };

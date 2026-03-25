@@ -83,15 +83,24 @@ const BusSeatSelection = () => {
 
   const [total, setTotal] = useState(0);
   const [selectedSeats, setSelectedSeats] = useState([]);
+  const [passengers, setPassengers] = useState([]);
 
   const handleSeatChange = (id, priceDelta) => {
      setTotal(prev => prev + priceDelta);
      if (priceDelta > 0) {
         setSelectedSeats(prev => [...prev, id]);
+        setPassengers(prev => [...prev, { seat: id, name: '', age: '', gender: '' }]);
      } else {
         setSelectedSeats(prev => prev.filter(seat => seat !== id));
+        setPassengers(prev => prev.filter(p => p.seat !== id));
      }
   };
+
+  const handlePassengerChange = (seatId, field, value) => {
+     setPassengers(prev => prev.map(p => p.seat === seatId ? { ...p, [field]: value } : p));
+  };
+
+  const isFormValid = passengers.length > 0 && passengers.every(p => p.name.trim() !== '' && p.age !== '' && p.gender !== '' && p.gender !== 'Gender');
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
@@ -151,20 +160,53 @@ const BusSeatSelection = () => {
                  </div>
               </div>
 
-              <div className="mt-6 p-6 bg-gray-50 rounded-2xl border border-gray-100">
-                  <h4 className="font-black text-sm text-gray-800 mb-4 uppercase tracking-widest">Passenger Information</h4>
-                  <div className="flex flex-col gap-3">
-                     <input type="text" placeholder="Full Name" className="w-full text-sm font-medium bg-white border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all" />
-                     <div className="flex gap-3">
-                        <input type="number" placeholder="Age" className="w-1/3 text-sm font-medium bg-white border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all" />
-                        <select className="w-2/3 text-sm font-medium bg-white border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all text-gray-500">
-                           <option>Gender</option>
-                           <option>Male</option>
-                           <option>Female</option>
-                           <option>Other</option>
-                        </select>
-                     </div>
+              <div className="mt-6 p-6 bg-gray-50 rounded-2xl border border-gray-100 flex-1 overflow-y-auto max-h-[300px] custom-scrollbar">
+                  <div className="flex justify-between items-center mb-4">
+                     <h4 className="font-black text-sm text-gray-800 uppercase tracking-widest">Passenger Information</h4>
+                     <span className="text-xs font-bold text-gray-500 bg-white px-2 py-1 rounded border border-gray-200">{selectedSeats.length} Seats Selected</span>
                   </div>
+                  
+                  {passengers.length === 0 ? (
+                     <p className="text-sm text-gray-500 text-center py-6">Please select your seats on the left to enter passenger details.</p>
+                  ) : (
+                     <div className="flex flex-col gap-4">
+                        {passengers.map((p, index) => (
+                           <div key={p.seat} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                              <span className="text-xs font-black text-red-500 uppercase tracking-widest mb-3 block">Passenger {index + 1} <span className="text-gray-400 font-bold">(Seat {p.seat})</span></span>
+                              <div className="flex flex-col gap-3">
+                                 <input 
+                                    type="text" 
+                                    placeholder="Full Name" 
+                                    value={p.name}
+                                    onChange={(e) => handlePassengerChange(p.seat, 'name', e.target.value)}
+                                    className="w-full text-sm font-medium bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all" 
+                                 />
+                                 <div className="flex gap-3">
+                                    <input 
+                                       type="number" 
+                                       placeholder="Age" 
+                                       value={p.age}
+                                       min="1"
+                                       max="120"
+                                       onChange={(e) => handlePassengerChange(p.seat, 'age', e.target.value)}
+                                       className="w-1/3 text-sm font-medium bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all" 
+                                    />
+                                    <select 
+                                       value={p.gender || 'Gender'}
+                                       onChange={(e) => handlePassengerChange(p.seat, 'gender', e.target.value)}
+                                       className={`w-2/3 text-sm font-medium bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all ${p.gender ? 'text-gray-800' : 'text-gray-400'}`}
+                                    >
+                                       <option disabled>Gender</option>
+                                       <option value="Male">Male</option>
+                                       <option value="Female">Female</option>
+                                       <option value="Other">Other</option>
+                                    </select>
+                                 </div>
+                              </div>
+                           </div>
+                        ))}
+                     </div>
+                  )}
               </div>
            </div>
 
@@ -178,10 +220,10 @@ const BusSeatSelection = () => {
                  <span className="text-3xl font-black text-red-600 tracking-tight">₹{total}</span>
               </div>
               <button 
-                 className={`w-full py-4 rounded-xl font-black text-white uppercase tracking-widest shadow-md transition-all flex items-center justify-center gap-2 relative overflow-hidden group btn-shine ${selectedSeats.length > 0 ? 'bg-red-500 hover:bg-red-600 hover:-translate-y-1 hover:shadow-xl hover:shadow-red-500/30' : 'bg-gray-300 cursor-not-allowed opacity-70'}`}
-                 disabled={selectedSeats.length === 0}
+                 className={`w-full py-4 rounded-xl font-black text-white uppercase tracking-widest shadow-md transition-all flex items-center justify-center gap-2 relative overflow-hidden group btn-shine ${isFormValid ? 'bg-red-500 hover:bg-red-600 hover:-translate-y-1 hover:shadow-xl hover:shadow-red-500/30' : 'bg-gray-300 cursor-not-allowed opacity-70'}`}
+                 disabled={!isFormValid}
               >
-                 Proceed to Pay <span className="absolute inset-0 w-full h-full -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:animate-[shine_1.5s_ease-in-out_infinite]"></span>
+                 {isFormValid ? 'Proceed to Pay' : (passengers.length === 0 ? 'Select Seats' : 'Incomplete Details')} {isFormValid && <span className="absolute inset-0 w-full h-full -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:animate-[shine_1.5s_ease-in-out_infinite]"></span>}
               </button>
            </div>
         </div>

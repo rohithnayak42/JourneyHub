@@ -2,6 +2,7 @@ import React from 'react';
 import Navbar from '../components/Navbar';
 import BusFilter from '../components/bus/BusFilter';
 import BusCard from '../components/bus/BusCard';
+import { Bus } from 'lucide-react';
 
 const BusResults = () => {
   const dummyBuses = [
@@ -12,30 +13,42 @@ const BusResults = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] flex flex-col font-sans">
+    <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
       <Navbar />
       
-      {/* Search Header Banner */}
-      <div className="bg-red-600 pt-24 pb-16 px-4 shadow-[0_10px_30px_rgba(220,38,38,0.2)] sticky top-0 z-40 relative overflow-hidden">
-         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=1920&q=80')] bg-cover bg-center opacity-10"></div>
-         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-white relative z-10">
-            <div>
-               <h1 className="text-3xl md:text-5xl font-black drop-shadow-md tracking-tight">Delhi → Manali</h1>
-               <p className="text-[11px] font-black text-red-100 mt-2 uppercase tracking-[0.3em] drop-shadow-sm flex items-center gap-2">
-                 <span>Showing {dummyBuses.length} Buses</span> <span className="w-1 h-1 bg-red-200 rounded-full"></span> <span>01 Apr 2026</span>
-               </p>
+      {/* Search Header Banner (Compact Redesign) */}
+      <div className="bg-white border-b border-gray-100 py-4 sticky top-20 z-40 shadow-sm transition-all">
+         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center gap-4">
+              <div className="bg-red-50 p-2.5 rounded-xl border border-red-100">
+                <Bus className="text-red-600" size={20} />
+              </div>
+              <div className="flex flex-col">
+                <h1 className="text-lg md:text-xl font-black text-gray-800 tracking-tight flex items-center gap-2">
+                   Delhi <span className="text-gray-300 font-medium">→</span> Manali
+                </h1>
+                <p className="text-[10px] font-black text-gray-400 mt-0.5 uppercase tracking-[0.2em] flex items-center gap-2">
+                  <span>Showing {dummyBuses.length} Buses</span> <span className="w-1 h-1 bg-gray-300 rounded-full"></span> <span>01 Apr 2026</span>
+                </p>
+              </div>
             </div>
-            <button className="mt-6 md:mt-0 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 px-6 py-3 rounded-xl font-bold uppercase tracking-widest text-[10px] transition-all shadow-md hover:shadow-xl hover:-translate-y-1">
-               Modify Search
-            </button>
+            <div className="flex items-center gap-3 w-full md:w-auto">
+               <button className="flex-1 md:flex-initial bg-gray-50 hover:bg-gray-100 border border-gray-200 px-5 py-2.5 rounded-xl font-black uppercase tracking-widest text-[9px] text-gray-500 transition-all">
+                  Modify Search
+               </button>
+               <div className="h-8 w-[px] bg-gray-100 hidden md:block"></div>
+               <button className="flex-1 md:flex-initial bg-white border border-gray-200 px-5 py-2.5 rounded-xl font-black uppercase tracking-widest text-[9px] text-gray-500 shadow-sm transition-all hover:border-red-200">
+                  Sort: Recommended
+               </button>
+            </div>
          </div>
       </div>
 
       {/* Main Content Dashboard */}
-      <div className="max-w-7xl mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8 w-full relative z-10 -mt-10">
+      <div className="max-w-7xl mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8 w-full relative z-10">
          {/* Left Sidebar Filters */}
          <div className="lg:w-1/4 hidden lg:block">
-            <div className="sticky top-32">
+            <div className="sticky top-44">
                <BusFilter />
             </div>
          </div>

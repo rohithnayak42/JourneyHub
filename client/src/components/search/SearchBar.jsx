@@ -104,7 +104,7 @@ const SearchBar = ({ type = 'bus' }) => {
         {/* Group 1: From + Swap + To */}
         <div className="flex-[2] w-full flex flex-col md:flex-row items-center relative group/group1">
            {/* Section 1: From */}
-           <div ref={fromRef} onClick={() => setOpenDropdown('from')} className="flex-1 w-full flex items-center gap-4 p-4 hover:bg-gray-50 transition-all cursor-pointer rounded-l-[1.8rem] group/from relative">
+           <div ref={fromRef} onClick={() => setOpenDropdown('from')} className="flex-1 w-full flex items-center gap-4 p-4 md:pr-8 hover:bg-gray-50 transition-all cursor-pointer rounded-l-[1.8rem] group/from relative">
               <MapPin size={24} className="text-gray-400 group-hover/from:text-red-500 transition-colors" />
               <div className="flex flex-col flex-1">
                 <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-1">{type === 'hotel' ? 'LOCATION' : 'FROM'}</span>
@@ -116,20 +116,20 @@ const SearchBar = ({ type = 'bus' }) => {
 
            {/* Swap Button (Hidden for Hotel) */}
            {type !== 'hotel' && (
-           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 hidden md:flex items-center justify-center">
+           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-30 hidden md:flex items-center justify-center pointer-events-none">
               <button 
                 onClick={(e) => {e.stopPropagation(); swapLocations();}}
                 style={{ transform: `rotate(${rotation}deg)` }}
-                className="bg-white border border-gray-100 w-9 h-9 rounded-full shadow-md flex items-center justify-center text-blue-500 hover:text-blue-600 hover:shadow-xl hover:scale-110 transition-all duration-500 active:scale-95 z-30"
+                className="bg-white border border-gray-200 w-10 h-10 rounded-full shadow-[0_4px_15px_rgba(0,0,0,0.1)] flex items-center justify-center text-blue-600 hover:text-blue-700 hover:shadow-[0_8px_25px_rgba(0,0,0,0.15)] hover:scale-115 transition-all duration-500 active:scale-95 pointer-events-auto cursor-pointer"
               >
-                 <ArrowRightLeft size={18} />
+                 <ArrowRightLeft size={20} />
               </button>
            </div>
            )}
 
            {/* Section 2: To */}
            {type !== 'hotel' && (
-           <div ref={toRef} onClick={() => setOpenDropdown('to')} className="flex-1 w-full flex items-center gap-4 p-4 hover:bg-gray-50 transition-all cursor-pointer group/to relative">
+           <div ref={toRef} onClick={() => setOpenDropdown('to')} className="flex-1 w-full flex items-center gap-4 p-4 md:pl-8 hover:bg-gray-50 transition-all cursor-pointer group/to relative">
               <MapPin size={24} className="text-gray-400 group-hover/to:text-red-500 transition-colors" />
               <div className="flex flex-col flex-1">
                 <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-1">TO</span>

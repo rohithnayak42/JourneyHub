@@ -39,23 +39,28 @@ const TrainResults = () => {
     <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
       <Navbar />
       
-      {/* Search Summary Header */}
-      <div className="bg-white border-b border-gray-100 py-6 sticky top-16 z-30 shadow-sm">
-        <div className="mmt-container px-4 flex flex-col md:flex-row justify-between items-center gap-4">
+      {/* Search Summary Header (Updated for Consistency) */}
+      <div className="bg-white border-b border-gray-100 py-4 sticky top-20 z-40 shadow-sm transition-all">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-4">
-            <div className="bg-primary/5 p-3 rounded-xl border border-primary/10">
-              <Train className="text-primary" size={24} />
+            <div className="bg-green-50 p-2.5 rounded-xl border border-green-100">
+              <Train className="text-green-600" size={20} />
             </div>
-            <div>
-              <h2 className="text-xl font-black text-gray-800 flex items-center gap-2">
-                {source} <span className="text-gray-300">→</span> {destination}
+            <div className="flex flex-col">
+              <h2 className="text-lg md:text-xl font-black text-gray-800 flex items-center gap-2">
+                {source} <span className="text-gray-300 font-medium">→</span> {destination}
               </h2>
-              <p className="text-xs font-black text-gray-400 uppercase tracking-[0.2em]">{new Date(date).toDateString()}</p>
+              <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{new Date(date).toDateString()} • {trains.length} Trains Found</p>
             </div>
           </div>
-          <div className="flex bg-gray-50 p-1 rounded-xl border border-gray-100">
-             <button className="px-6 py-2 rounded-lg text-xs font-black text-gray-400 hover:text-gray-600 uppercase tracking-widest">Modify Search</button>
-             <button className="px-6 py-2 rounded-lg text-xs font-black bg-white shadow-sm text-primary uppercase tracking-widest">Sort: Fastest</button>
+          <div className="flex items-center gap-3 w-full md:w-auto">
+             <button className="flex-1 md:flex-initial bg-gray-50 hover:bg-gray-100 border border-gray-200 px-5 py-2.5 rounded-xl font-black uppercase tracking-widest text-[9px] text-gray-500 transition-all">
+                Modify Search
+             </button>
+             <div className="h-8 w-[1px] bg-gray-100 hidden md:block"></div>
+             <button className="flex-1 md:flex-initial bg-white border border-gray-200 px-5 py-2.5 rounded-xl font-black uppercase tracking-widest text-[9px] text-gray-500 shadow-sm transition-all hover:border-green-200">
+                Sort: Fastest
+             </button>
           </div>
         </div>
       </div>

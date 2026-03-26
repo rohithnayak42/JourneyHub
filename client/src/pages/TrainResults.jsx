@@ -1,186 +1,366 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import API from '../services/api';
 import Navbar from '../components/Navbar';
-import BookingCard from '../components/BookingCard';
-import { Filter, Search, Loader2, Train } from 'lucide-react';
-import { motion } from 'framer-motion';
+import TrainCard from '../components/TrainCard';
+import FilterSidebar from '../components/FilterSidebar';
+import { 
+  Search, 
+  Train as TrainIcon, 
+  ChevronLeft, 
+  ChevronRight,
+  ArrowUpDown,
+  Zap,
+  Clock,
+  CircleDollarSign,
+  Flame
+} from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const TrainResults = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
   const source = queryParams.get('source');
   const destination = queryParams.get('destination');
-  const date = queryParams.get('date');
+  const initialDate = queryParams.get('date') ? new Date(queryParams.get('date')) : new Date();
 
   const [trains, setTrains] = useState([]);
+  const [filteredTrains, setFilteredTrains] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [selectedDate, setSelectedDate] = useState(initialDate);
+  const [sortBy, setSortBy] = useState('relevance');
+  const [selectedClasses, setSelectedClasses] = useState({}); // kept for potential future use
+  const [filters, setFilters] = useState({
+    availability: [],
+    classes: [],
+    departureTime: [],
+    runningDays: [],
+    quota: 'General'
+  });
+
+  const dateSliderRef = useRef(null);
+
+  // Generate date range for the slider
+  const dates = Array.from({ length: 14 }, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() + i);
+    return d;
+  });
 
   useEffect(() => {
     const fetchTrains = async () => {
       try {
-        console.log("Fetching trains...");
         setLoading(true);
-        const res = await API.get(`/trains/search?source=${source}&destination=${destination}&date=${date}`);
+        const formattedDate = selectedDate.toISOString().split('T')[0];
+        const res = await API.get(`/trains/search?source=${source}&destination=${destination}&date=${formattedDate}`);
         
-        if (res.status !== 200 || !res.data) {
-          throw new Error("API failed");
-        }
+        if (res.status !== 200 || !res.data) throw new Error("API failed");
         
         setTrains(res.data.data || []);
         setError('');
         setLoading(false);
       } catch (err) {
-        console.error("Error fetching trains:", err);
-        // fallback data
-        const dummyTrains = [
+        // Enhanced Dummy Data for Redesign
+        const dummyData = [
           {
-            _id: "dummy1",
-            trainName: "Rajdhani Express",
-            trainNumber: "12951",
-            source: source || "Delhi",
-            destination: destination || "Mumbai",
+            _id: "t1",
+            trainName: "Rajdhani Special",
+            trainNumber: "12952",
+            source: source || "New Delhi",
+            destination: destination || "Mumbai Central",
             departureTime: "16:55",
             arrivalTime: "08:35",
             duration: "15h 40m",
-            price: 2500,
-            rating: 4.8,
-            amenities: ["1A", "2A", "3A"]
+            isFastest: true,
+            runningDays: [0, 1, 2, 3, 4, 5, 6],
+            classes: [
+              { type: "1A", price: 4850, status: "AVAILABLE", available: 12 },
+              { type: "2A", price: 2890, status: "AVAILABLE", available: 45 },
+              { type: "3A", price: 2100, status: "WL", wlNumber: 14 }
+            ]
           },
           {
-            _id: "dummy2",
+            _id: "t2",
+            trainName: "Aug Kranti Tejas",
+            trainNumber: "12954",
+            source: source || "New Delhi",
+            destination: destination || "Mumbai Central",
+            departureTime: "17:15",
+            arrivalTime: "10:05",
+            duration: "16h 50m",
+            runningDays: [0, 2, 4, 6],
+            classes: [
+              { type: "2A", price: 2750, status: "AVAILABLE", available: 8 },
+              { type: "3A", price: 1980, status: "AVAILABLE", available: 122 },
+              { type: "SL", price: 850, status: "NOT_AVAILABLE" }
+            ]
+          },
+          {
+            _id: "t3",
             trainName: "Duronto Express",
-            trainNumber: "12213",
-            source: source || "Delhi",
-            destination: destination || "Mumbai",
-            departureTime: "23:00",
-            arrivalTime: "14:00",
-            duration: "15h",
-            price: 1800,
-            rating: 4.5,
-            amenities: ["2A", "3A", "SL"]
+            trainNumber: "12268",
+            source: source || "New Delhi",
+            destination: destination || "Mumbai Central",
+            departureTime: "22:20",
+            arrivalTime: "15:50",
+            duration: "17h 30m",
+            runningDays: [1, 3, 5],
+            classes: [
+              { type: "3A", price: 1850, status: "AVAILABLE", available: 204 },
+              { type: "SL", price: 720, status: "WL", wlNumber: 8 }
+            ]
           }
         ];
-        setTrains(dummyTrains);
+        setTrains(dummyData);
         setError('');
         setLoading(false);
       }
     };
 
-    if (source && destination) {
-      fetchTrains();
+    if (source && destination) fetchTrains();
+  }, [source, destination, selectedDate]);
+
+  // Apply Filtering & Sorting
+  useEffect(() => {
+    let result = [...trains];
+
+    // Filter by Availability
+    if (filters.availability?.length > 0) {
+      if (filters.availability.includes('Show Confirmed Only')) {
+        result = result.filter(t => t.classes.some(c => c.status === 'AVAILABLE'));
+      }
+      if (filters.availability.includes('Hide Waiting List')) {
+        // This is tricky: do we hide the train or just the classes?
+        // Requirements say "Hide Waiting List", usually meaning show only available confirmed seats.
+        result = result.filter(t => t.classes.some(c => c.status === 'AVAILABLE'));
+      }
     }
-  }, [source, destination, date]);
+
+    // Filter by Class
+    if (filters.classes?.length > 0) {
+      result = result.filter(t => t.classes.some(c => filters.classes.includes(c.type)));
+    }
+
+    // Filter by Running Days
+    if (filters.runningDays?.length > 0) {
+      result = result.filter(t => t.runningDays && t.runningDays.some(day => filters.runningDays.includes(day)));
+    }
+
+    // Filter by Departure Time Slots
+    if (filters.departureTime?.length > 0) {
+      result = result.filter(t => {
+        const hour = parseInt(t.departureTime.split(':')[0]);
+        if (filters.departureTime.includes('Morning') && hour >= 6 && hour < 12) return true;
+        if (filters.departureTime.includes('Afternoon') && hour >= 12 && hour < 18) return true;
+        if (filters.departureTime.includes('Evening') && hour >= 18 && hour < 24) return true;
+        if (filters.departureTime.includes('Night') && (hour >= 0 && hour < 6)) return true;
+        return false;
+      });
+    }
+
+    // Sorting Logic
+    if (sortBy === 'price') {
+      result.sort((a, b) => Math.min(...a.classes.map(c => c.price)) - Math.min(...b.classes.map(c => c.price)));
+    } else if (sortBy === 'duration') {
+      result.sort((a, b) => parseInt(a.duration) - parseInt(b.duration));
+    } else if (sortBy === 'departure') {
+      result.sort((a, b) => a.departureTime.localeCompare(b.departureTime));
+    }
+
+    setFilteredTrains(result);
+  }, [trains, filters, sortBy]);
+
+  const handleSelectClass = (train, cls) => {
+    navigate(`/booking/train/${train._id}?class=${cls}&quota=${filters.quota}`);
+  };
+
+  const scrollDates = (direction) => {
+    if (dateSliderRef.current) {
+      const scrollAmt = direction === 'left' ? -200 : 200;
+      dateSliderRef.current.scrollBy({ left: scrollAmt, behavior: 'smooth' });
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#f5f7fb] flex flex-col font-sans selection:bg-primary/20">
       <Navbar />
       
-      {/* Search Summary Header (Updated for Consistency) */}
-      <div className="bg-white border-b border-gray-100 py-4 sticky top-20 z-40 shadow-sm transition-all">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-4">
-            <div className="bg-green-50 p-2.5 rounded-xl border border-green-100">
-              <Train className="text-green-600" size={20} />
+      {/* Smart Search Summary & Date Slider */}
+      <div className="bg-white border-b border-gray-200 sticky top-20 z-40 transition-all duration-500 py-6 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 md:px-8">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+            
+            {/* Route Summary */}
+            <div className="flex items-center gap-6">
+              <div className="p-4 bg-gray-900 rounded-[24px] text-white shadow-xl shadow-gray-400/20">
+                <TrainIcon size={24} />
+              </div>
+              <div>
+                <div className="flex items-center gap-3">
+                  <h2 className="text-2xl font-black text-gray-900 leading-tight">{source}</h2>
+                  <div className="w-8 h-[3px] bg-primary/20 rounded-full"></div>
+                  <h2 className="text-2xl font-black text-gray-900 leading-tight">{destination}</h2>
+                </div>
+                <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mt-1">
+                  {filteredTrains.length} Premium Trains Available • <span className="text-primary">{filters.quota} Quota</span>
+                </p>
+              </div>
             </div>
-            <div className="flex flex-col">
-              <h2 className="text-lg md:text-xl font-black text-gray-800 flex items-center gap-2">
-                {source} <span className="text-gray-300 font-medium">→</span> {destination}
-              </h2>
-              <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{new Date(date).toDateString()} • {trains.length} Trains Found</p>
+
+            {/* Date Selection Slider */}
+            <div className="flex-1 max-w-2xl relative group">
+              <button 
+                onClick={() => scrollDates('left')}
+                className="absolute -left-4 top-1/2 -translate-y-1/2 z-10 p-2 bg-white rounded-full shadow-lg border border-gray-200 text-gray-500 hover:text-primary opacity-0 group-hover:opacity-100 transition-all"
+              >
+                <ChevronLeft size={16} />
+              </button>
+              
+              <div 
+                ref={dateSliderRef}
+                className="flex gap-3 overflow-x-hidden px-4 no-scrollbar"
+              >
+                {dates.map((date, i) => {
+                  const isSelected = date.toDateString() === selectedDate.toDateString();
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => setSelectedDate(date)}
+                      className={`flex-shrink-0 flex flex-col items-center justify-center w-20 py-4 rounded-[24px] transition-all duration-300 border-2 ${
+                        isSelected 
+                          ? 'bg-primary border-primary text-white shadow-xl shadow-primary/20 scale-105' 
+                          : 'bg-white border-gray-100 text-gray-500 hover:border-gray-200 hover:bg-gray-50'
+                      }`}
+                    >
+                      <span className={`text-[10px] font-black uppercase tracking-wider mb-1 ${isSelected ? 'text-white/80' : 'text-gray-400'}`}>
+                        {date.toLocaleString('default', { weekday: 'short' })}
+                      </span>
+                      <span className="text-lg font-black">{date.getDate()}</span>
+                    </button>
+                  )
+                })}
+              </div>
+
+              <button 
+                onClick={() => scrollDates('right')}
+                className="absolute -right-4 top-1/2 -translate-y-1/2 z-10 p-2 bg-white rounded-full shadow-lg border border-gray-200 text-gray-500 hover:text-primary opacity-0 group-hover:opacity-100 transition-all"
+              >
+                <ChevronRight size={16} />
+              </button>
             </div>
-          </div>
-          <div className="flex items-center gap-3 w-full md:w-auto">
-             <button className="flex-1 md:flex-initial bg-gray-50 hover:bg-gray-100 border border-gray-200 px-5 py-2.5 rounded-xl font-black uppercase tracking-widest text-[9px] text-gray-500 transition-all">
-                Modify Search
-             </button>
-             <div className="h-8 w-[1px] bg-gray-100 hidden md:block"></div>
-             <button className="flex-1 md:flex-initial bg-white border border-gray-200 px-5 py-2.5 rounded-xl font-black uppercase tracking-widest text-[9px] text-gray-500 shadow-sm transition-all hover:border-green-200">
-                Sort: Fastest
-             </button>
           </div>
         </div>
       </div>
 
-      <div className="mmt-container py-10 px-4 flex flex-col md:flex-row gap-8">
-        {/* Sidebar: Filters */}
-        <aside className="w-full md:w-72 space-y-6">
-          <div className="bg-white p-8 rounded-[32px] shadow-sm border border-gray-100 sticky top-44">
-            <div className="flex items-center justify-between mb-8">
-              <h3 className="font-black text-gray-800 uppercase tracking-[0.15em] text-[10px]">Filter Options</h3>
-              <Filter size={16} className="text-gray-300" />
-            </div>
-            
-            <div className="space-y-8">
-              <div>
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4">Availability</p>
-                <div className="space-y-3">
-                  {['Show Confirmed Only', 'Hide Waiting List'].map(option => (
-                    <label key={option} className="flex items-center gap-3 cursor-pointer group">
-                      <div className="relative flex items-center">
-                        <input type="checkbox" className="peer h-5 w-5 cursor-pointer appearance-none rounded-md border border-gray-200 transition-all checked:bg-primary checked:border-primary" />
-                        <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
-                        </span>
-                      </div>
-                      <span className="text-xs text-gray-500 group-hover:text-gray-800 font-bold transition-colors">{option}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-              
-              <div>
-                 <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4">Journey Class</p>
-                 <div className="grid grid-cols-2 gap-2">
-                    {['1A', '2A', '3A', 'SL', 'EC', 'CC'].map(cls => (
-                      <button key={cls} className="text-[9px] font-black border border-gray-100 py-2.5 rounded-xl text-gray-400 hover:border-primary/30 hover:bg-primary/5 hover:text-primary transition-all uppercase tracking-widest">{cls}</button>
-                    ))}
-                 </div>
-              </div>
-            </div>
-          </div>
-        </aside>
+      <div className="max-w-7xl mx-auto w-full px-4 md:px-8 py-12 flex flex-col lg:flex-row gap-12">
+        
+        {/* Advanced Filters */}
+        <FilterSidebar filters={filters} setFilters={setFilters} />
 
-        {/* Main Content: Results */}
-        <main className="flex-1">
+        {/* Main Results Area */}
+        <main className="flex-1 space-y-8">
+          
+          {/* Action Bar (Sorting & Quick Filters) */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6 bg-white p-6 rounded-[32px] border border-gray-200 shadow-sm">
+             <div className="flex items-center gap-3">
+               <div className="p-2.5 bg-gray-900 rounded-xl text-white shadow-lg shadow-gray-900/10">
+                  <Flame size={18} />
+               </div>
+               <div>
+                 <p className="text-[10px] font-black text-gray-900 uppercase tracking-widest leading-none">Smart Sort</p>
+                 <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-1">Best matched routes for you</p>
+               </div>
+             </div>
+             
+             <div className="flex items-center gap-2 overflow-x-auto no-scrollbar w-full md:w-auto p-1">
+                {[
+                  { id: 'relevance', label: 'Best Match', icon: Zap },
+                  { id: 'price', label: 'Lowest Price', icon: CircleDollarSign },
+                  { id: 'duration', label: 'Fastest', icon: Clock },
+                  { id: 'departure', label: 'Early Birds', icon: ArrowUpDown }
+                ].map(option => (
+                  <button
+                    key={option.id}
+                    onClick={() => setSortBy(option.id)}
+                    className={`flex items-center gap-2 px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all border-2 ${
+                      sortBy === option.id 
+                        ? 'bg-gray-900 border-gray-900 text-white shadow-xl scale-105' 
+                        : 'bg-white text-gray-500 border-gray-100 hover:border-gray-300 hover:text-gray-900'
+                    }`}
+                  >
+                    <option.icon size={14} />
+                    {option.label}
+                  </button>
+                ))}
+             </div>
+          </div>
+
+          {/* Results List */}
           {loading ? (
-            <div className="flex flex-col items-center justify-center py-24 space-y-6">
-              <div className="relative">
-                <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
-                <Train className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-primary" size={24} />
-              </div>
-              <p className="font-black text-gray-400 uppercase tracking-[0.3em] text-[10px] animate-pulse">Scanning railway network...</p>
-            </div>
-          ) : error ? (
-            <div className="text-center py-20 bg-white rounded-[32px] border border-dashed border-gray-200">
-              <p className="text-red-500 font-bold">{error}</p>
-            </div>
-          ) : trains.length === 0 ? (
-            <div className="text-center py-24 bg-white rounded-[40px] border-2 border-dashed border-gray-100">
-              <div className="bg-gray-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Search className="text-gray-300" size={32} />
-              </div>
-              <h3 className="text-2xl font-black text-gray-800 mb-2">No trains found</h3>
-              <p className="text-gray-400 font-medium px-4">There are no direct trains for this route on the selected date.</p>
-            </div>
-          ) : (
-            <motion.div 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-4"
-            >
-              <div className="flex items-center justify-between mb-8 ml-2">
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{trains.length} Trains found matching your route</p>
-                <span className="text-[10px] font-black text-primary bg-primary/10 px-3 py-1 rounded-full uppercase tracking-widest">IRCTC Authorized</span>
-              </div>
-              {trains.map(train => (
-                <BookingCard key={train._id} item={train} type="train" />
+            <div className="space-y-4">
+              {[1, 2, 3].map(i => (
+                <div key={i} className="h-64 bg-white/50 rounded-[32px] animate-pulse border border-gray-50 shadow-sm overflow-hidden">
+                   <div className="h-full bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"></div>
+                </div>
               ))}
+            </div>
+          ) : filteredTrains.length === 0 ? (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-32 bg-white rounded-[40px] border border-dashed border-gray-200"
+            >
+              <div className="bg-gray-50 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-8">
+                <Search className="text-gray-200" size={40} />
+              </div>
+              <h3 className="text-2xl font-black text-gray-900 mb-2">No trains found</h3>
+              <p className="text-gray-400 font-bold px-4 max-w-sm mx-auto">Try adjusting your filters or changing the date of your journey.</p>
+              <button 
+                onClick={() => setFilters({ availability: [], classes: [], departureTime: [], runningDays: [], quota: 'General' })}
+                className="mt-8 text-primary font-black uppercase tracking-widest text-[10px] bg-primary/10 px-6 py-3 rounded-xl hover:bg-primary hover:text-white transition-all"
+              >
+                Clear All Filters
+              </button>
             </motion.div>
+          ) : (
+            <div className="space-y-6">
+              <AnimatePresence mode="popLayout">
+                {filteredTrains.map((train) => (
+                  <TrainCard 
+                    key={train._id || train.trainNumber} 
+                    train={train}
+                    onConfirmBooking={handleSelectClass}
+                    activeWeekdays={filters.runningDays}
+                    onToggleWeekday={(idx) => {
+                      setFilters(prev => {
+                        const active = prev.runningDays || [];
+                        const updated = active.includes(idx)
+                          ? active.filter(v => v !== idx)
+                          : [...active, idx];
+                        return { ...prev, runningDays: updated };
+                      });
+                    }}
+                  />
+                ))}
+              </AnimatePresence>
+            </div>
           )}
         </main>
       </div>
+
+      <style jsx>{`
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+        .animate-shimmer {
+          animation: shimmer 1.5s infinite linear;
+        }
+      `}</style>
     </div>
   );
 };

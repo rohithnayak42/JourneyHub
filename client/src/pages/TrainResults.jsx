@@ -4,6 +4,7 @@ import API from '../services/api';
 import Navbar from '../components/Navbar';
 import TrainCard from '../components/TrainCard';
 import FilterSidebar from '../components/FilterSidebar';
+import ModifySearchButton from '../components/common/ModifySearchButton';
 import { 
   Search, 
   Train as TrainIcon, 
@@ -193,7 +194,8 @@ const TrainResults = () => {
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
             
             {/* Route Summary */}
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4">
+              <ModifySearchButton />
               <div className="p-4 bg-gray-900 rounded-[24px] text-white shadow-xl shadow-gray-400/20">
                 <TrainIcon size={24} />
               </div>

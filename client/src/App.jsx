@@ -17,6 +17,7 @@ import FlightResults from './pages/FlightResults';
 import HotelResults from './pages/HotelResults';
 import Dashboard from './pages/Dashboard';
 import BookingPage from './pages/BookingPage';
+import TrainBooking from './pages/TrainBooking';
 
 function App() {
   return (
@@ -35,7 +36,6 @@ function App() {
           <Route path="/trains" element={<TrainResults />} />
           <Route path="/flights" element={<FlightResults />} />
           <Route path="/hotels" element={<HotelResults />} />
-          {/* Protected Routes */}
           <Route 
             path="/booking/:type/:id" 
             element={
@@ -43,6 +43,10 @@ function App() {
                 <BookingPage />
               </ProtectedRoute>
             } 
+          />
+          <Route 
+            path="/train/booking" 
+            element={<TrainBooking />} 
           />
           <Route 
             path="/dashboard" 

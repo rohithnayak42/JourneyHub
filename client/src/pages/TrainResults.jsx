@@ -174,7 +174,11 @@ const TrainResults = () => {
   }, [trains, filters, sortBy]);
 
   const handleSelectClass = (train, cls) => {
-    navigate(`/booking/train/${train._id}?class=${cls}&quota=${filters.quota}`);
+    // Attempt to find the full class object, fallback to mocked details if not found
+    const classDetails = train.classes?.find(c => c.type === cls) || { type: cls, price: 1550 };
+    navigate(`/train/booking`, { 
+      state: { train, selectedClass: classDetails, quota: filters.quota } 
+    });
   };
 
   const scrollDates = (direction) => {

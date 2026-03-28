@@ -88,9 +88,16 @@ const TrainBooking = () => {
           {/* 1. Sticky Top Summary Bar */}
           <div className="bg-white border-b border-gray-200 sticky top-20 z-40 shadow-sm transition-all py-4 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-              <div className="flex items-center gap-5">
-                <div className="bg-gray-900 p-3 rounded-2xl text-white shadow-lg shadow-gray-900/10">
-                  <Train size={24} />
+              <div className="flex items-center gap-4 md:gap-5 w-full md:w-auto">
+                <button 
+                  onClick={() => navigate(-1)} 
+                  className="flex items-center bg-white border border-gray-200 px-3 py-2 md:px-4 md:py-2.5 rounded-xl text-xs md:text-sm font-black text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 transition-all shadow-sm whitespace-nowrap"
+                  aria-label="Go back to search results"
+                >
+                  ← Back to Results
+                </button>
+                <div className="hidden sm:block bg-gray-900 p-2 md:p-3 rounded-xl md:rounded-2xl text-white shadow-lg shadow-gray-900/10">
+                  <Train size={24} className="w-5 h-5 md:w-6 md:h-6" />
                 </div>
                 <div>
                   <h1 className="text-xl font-black text-gray-900 tracking-tight leading-none mb-1">

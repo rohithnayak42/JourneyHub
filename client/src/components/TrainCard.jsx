@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Train, 
@@ -14,21 +14,31 @@ import {
 
 // Each TrainCard manages its OWN selectedClass state independently.
 // This ensures no cross-card state leakage.
-const TrainCard = ({ train, onConfirmBooking, activeWeekdays, onToggleWeekday }) => {
+const TrainCard = ({ train, onConfirmBooking }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  // Per-card local state: which class is selected on THIS card only
   const [selectedClass, setSelectedClass] = useState(null);
+  const [selectedWeekdays, setSelectedWeekdays] = useState([]);
+  const hasAvailableSeats = train.classes?.some(c => c.status === 'AVAILABLE' || c.availableSeats > 0);
 
-  const getStatusColor = (status) => {
+  useEffect(() => {
+    if (!selectedClass && train.classes) {
+      const firstAvailable = train.classes.find(c => c.status === 'AVAILABLE' || c.availableSeats > 0);
+      if (firstAvailable) {
+        setSelectedClass(firstAvailable.type || firstAvailable.className);
+      }
+    }
+  }, [train.classes, selectedClass]);
+
+  const getStatusColor = (status, availableSeats) => {
     const s = status?.toUpperCase();
-    if (s === 'AVAILABLE') return 'text-emerald-600 bg-emerald-50';
+    if (s === 'AVAILABLE' || availableSeats > 0) return 'text-emerald-600 bg-emerald-50';
     if (s === 'WL') return 'text-amber-600 bg-amber-50';
     return 'text-rose-500 bg-rose-50';
   };
 
   const getStatusLabel = (item) => {
     const s = item.status?.toUpperCase();
-    if (s === 'AVAILABLE') return `Avail. ${item.available || ''}`.trim();
+    if (s === 'AVAILABLE' || item.availableSeats > 0) return `Avail. ${item.available || item.availableSeats || ''}`.trim();
     if (s === 'WL') return `WL ${item.wlNumber || ''}`.trim();
     return 'Sold Out';
   };
@@ -84,13 +94,19 @@ const TrainCard = ({ train, onConfirmBooking, activeWeekdays, onToggleWeekday })
             <div className="flex gap-2 flex-wrap">
               {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((dayLabel, idx) => {
                 const isRunning = train.runningDays?.includes(idx);
-                // isActive = this day is in the global filter (highlighted by user)
-                const isActive = activeWeekdays?.includes(idx);
+                // isActive = this day is locally selected on this specific card
+                const isActive = selectedWeekdays.includes(idx);
                 return (
                   <button
                     key={idx}
                     data-day={dayLabel}
-                    onClick={() => isRunning && onToggleWeekday && onToggleWeekday(idx)}
+                    onClick={() => {
+                      if (isRunning) {
+                        setSelectedWeekdays(prev => 
+                          prev.includes(idx) ? prev.filter(v => v !== idx) : [...prev, idx]
+                        );
+                      }
+                    }}
                     style={{
                       width: '28px',
                       height: '28px',
@@ -158,12 +174,13 @@ const TrainCard = ({ train, onConfirmBooking, activeWeekdays, onToggleWeekday })
           {/* ── Section 3: Class / Price Grid (per-card scoped) ── */}
           <div className="w-full lg:w-1/3 grid grid-cols-2 gap-3">
             {train.classes?.map((cls) => {
-              const isActive = selectedClass === cls.type;
+              const classType = cls.type || cls.className;
+              const isActive = selectedClass === classType;
               return (
                 <button
-                  key={cls.type}
-                  data-class={cls.type}
-                  onClick={() => handleClassClick(cls)}
+                  key={classType}
+                  data-class={classType}
+                  onClick={() => handleClassClick({ type: classType, ...cls })}
                   style={{
                     padding: '16px',
                     borderRadius: '16px',
@@ -184,7 +201,7 @@ const TrainCard = ({ train, onConfirmBooking, activeWeekdays, onToggleWeekday })
                       letterSpacing: '0.1em',
                       color: isActive ? '#ffffff' : '#9ca3af',
                     }}>
-                      {cls.type}
+                      {classType}
                     </span>
                     <span style={{
                       fontSize: '11px',
@@ -203,7 +220,7 @@ const TrainCard = ({ train, onConfirmBooking, activeWeekdays, onToggleWeekday })
                     backgroundColor: isActive ? 'rgba(255,255,255,0.2)' : undefined,
                     color: isActive ? '#ffffff' : undefined,
                   }}
-                    className={isActive ? '' : getStatusColor(cls.status)}
+                    className={isActive ? '' : getStatusColor(cls.status, cls.availableSeats)}
                   >
                     {getStatusLabel(cls)}
                   </div>
@@ -237,12 +254,12 @@ const TrainCard = ({ train, onConfirmBooking, activeWeekdays, onToggleWeekday })
           </div>
 
           <button
-            disabled={!selectedClass}
+            disabled={!hasAvailableSeats}
             onClick={handleConfirm}
             className={`px-10 py-4 rounded-full font-black text-xs uppercase tracking-[0.2em] flex items-center gap-3 transition-all duration-500 shadow-2xl ${
-              selectedClass
-                ? 'bg-gray-900 text-white hover:bg-primary shadow-primary/20 translate-x-1'
-                : 'bg-gray-100 text-gray-400 cursor-not-allowed shadow-none'
+              hasAvailableSeats
+                ? 'bg-[#ff4d4f] text-white hover:bg-red-600 shadow-red-500/20 translate-x-1 cursor-pointer'
+                : 'bg-[#ccc] text-gray-500 cursor-not-allowed shadow-none border border-gray-300'
             }`}
           >
             <span>Confirm Booking</span>

@@ -18,6 +18,8 @@ import HotelResults from './pages/HotelResults';
 import Dashboard from './pages/Dashboard';
 import BookingPage from './pages/BookingPage';
 import TrainBooking from './pages/TrainBooking';
+import TrainPayment from './pages/TrainPayment';
+import TrainTicket from './pages/TrainTicket';
 
 function App() {
   return (
@@ -47,6 +49,14 @@ function App() {
           <Route 
             path="/train/booking" 
             element={<TrainBooking />} 
+          />
+          <Route 
+            path="/train/payment" 
+            element={<TrainPayment />} 
+          />
+          <Route 
+            path="/train/ticket" 
+            element={<TrainTicket />} 
           />
           <Route 
             path="/dashboard" 

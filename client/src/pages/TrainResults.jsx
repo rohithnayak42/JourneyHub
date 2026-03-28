@@ -59,7 +59,14 @@ const TrainResults = () => {
         
         if (res.status !== 200 || !res.data) throw new Error("API failed");
         
-        setTrains(res.data.data || []);
+        let fetchedTrains = res.data.data || [];
+        
+        // If backend has no data for this route, fallback to dummy data
+        if (fetchedTrains.length === 0) {
+           throw new Error("No trains found in DB, using mock data");
+        }
+
+        setTrains(fetchedTrains);
         setError('');
         setLoading(false);
       } catch (err) {
@@ -130,23 +137,30 @@ const TrainResults = () => {
     // Filter by Availability
     if (filters.availability?.length > 0) {
       if (filters.availability.includes('Show Confirmed Only')) {
-        result = result.filter(t => t.classes.some(c => c.status === 'AVAILABLE'));
+        result = result.filter(t => t.classes.some(c => c.status === 'AVAILABLE' || c.availableSeats > 0));
       }
       if (filters.availability.includes('Hide Waiting List')) {
-        // This is tricky: do we hide the train or just the classes?
         // Requirements say "Hide Waiting List", usually meaning show only available confirmed seats.
-        result = result.filter(t => t.classes.some(c => c.status === 'AVAILABLE'));
+        result = result.filter(t => t.classes.some(c => c.status === 'AVAILABLE' || c.availableSeats > 0));
       }
     }
 
     // Filter by Class
     if (filters.classes?.length > 0) {
-      result = result.filter(t => t.classes.some(c => filters.classes.includes(c.type)));
+      result = result.filter(t => t.classes.some(c => filters.classes.includes(c.type || c.className)));
     }
 
     // Filter by Running Days
-    if (filters.runningDays?.length > 0) {
-      result = result.filter(t => t.runningDays && t.runningDays.some(day => filters.runningDays.includes(day)));
+    if (filters.runningDays && filters.runningDays.length > 0) {
+      result = result.filter(train => {
+        // Handle "All Days Selected" case specifically
+        if (filters.runningDays.length === 7) return true;
+        
+        if (!train.runningDays) return false;
+        
+        // Correct Filtering Logic: OR condition
+        return filters.runningDays.some(day => train.runningDays.includes(day));
+      });
     }
 
     // Filter by Departure Time Slots
@@ -161,6 +175,22 @@ const TrainResults = () => {
       });
     }
 
+    // Filter by Exact Match Date
+    const mapDateToWeekdayIndex = (date) => {
+      const day = date.getDay();
+      return day === 0 ? 6 : day - 1; 
+    };
+    const selectedDayIdx = mapDateToWeekdayIndex(selectedDate);
+    result = result.filter(train => {
+      // If mock train has runningDays, filter by running days
+      if (train.runningDays) {
+        return train.runningDays.includes(selectedDayIdx);
+      }
+      // DB trains are precisely queried from backend API for this exact Date string,
+      // so they inherently match the requested day loop!
+      return true;
+    });
+
     // Sorting Logic
     if (sortBy === 'price') {
       result.sort((a, b) => Math.min(...a.classes.map(c => c.price)) - Math.min(...b.classes.map(c => c.price)));
@@ -171,11 +201,11 @@ const TrainResults = () => {
     }
 
     setFilteredTrains(result);
-  }, [trains, filters, sortBy]);
+  }, [trains, filters, sortBy, selectedDate]);
 
-  const handleSelectClass = (train, cls) => {
+  const handleSelectClass = (train, clsType) => {
     // Attempt to find the full class object, fallback to mocked details if not found
-    const classDetails = train.classes?.find(c => c.type === cls) || { type: cls, price: 1550 };
+    const classDetails = train.classes?.find(c => (c.type || c.className) === clsType) || { type: clsType, price: 1550 };
     navigate(`/train/booking`, { 
       state: { train, selectedClass: classDetails, quota: filters.quota } 
     });
@@ -338,16 +368,6 @@ const TrainResults = () => {
                     key={train._id || train.trainNumber} 
                     train={train}
                     onConfirmBooking={handleSelectClass}
-                    activeWeekdays={filters.runningDays}
-                    onToggleWeekday={(idx) => {
-                      setFilters(prev => {
-                        const active = prev.runningDays || [];
-                        const updated = active.includes(idx)
-                          ? active.filter(v => v !== idx)
-                          : [...active, idx];
-                        return { ...prev, runningDays: updated };
-                      });
-                    }}
                   />
                 ))}
               </AnimatePresence>

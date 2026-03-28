@@ -24,7 +24,20 @@ const TrainBooking = () => {
   const [passengers, setPassengers] = useState([{ id: Date.now(), name: '', age: '', gender: '', berth: '' }]);
   const [preferences, setPreferences] = useState({ autoUpgrade: true, lowerBerthPreferred: false });
   const [irctcUser, setIrctcUser] = useState('');
+  const [irctcPass, setIrctcPass] = useState('');
   const [contact, setContact] = useState({ email: '', phone: '' });
+  const [boardingStation, setBoardingStation] = useState('');
+
+  const isFormValid = () => {
+    return (
+      irctcUser.trim() !== '' &&
+      irctcPass.trim() !== '' &&
+      contact.email.trim() !== '' &&
+      contact.phone.trim() !== '' &&
+      boardingStation !== '' &&
+      passengers.every(p => p.name.trim() !== '' && p.age !== '' && p.gender !== '')
+    );
+  };
   const [protection, setProtection] = useState(true);
   const [coupon, setCoupon] = useState('');
   const [couponApplied, setCouponApplied] = useState(false);
@@ -67,16 +80,21 @@ const TrainBooking = () => {
   };
 
   const validateAndProceed = () => {
-    const invalidPassenger = passengers.some(p => !p.name || !p.age || !p.gender);
-    if (invalidPassenger) return alert('Please fill missing passenger details');
-    if (!irctcUser) return alert('IRCTC Username is required');
-    if (!contact.email || !contact.phone) return alert('Contact information is required');
+    if (!isFormValid()) return;
     
-    setIsProcessing(true);
-    setTimeout(() => {
-      setIsProcessing(false);
-      setStep(2); // Simulated success transition
-    }, 2000);
+    navigate('/train/payment', { 
+      state: { 
+        train, 
+        selectedClass, 
+        passengers, 
+        contact, 
+        total, 
+        quota, 
+        bookingDate: "01 Apr 2026",
+        pnr: Math.floor(1000000000 + Math.random() * 9000000000).toString(),
+        bookingId: `TXN-${Math.floor(Math.random() * 900000) + 100000}`
+      } 
+    });
   };
 
   return (
@@ -229,8 +247,9 @@ const TrainBooking = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Boarding Station</label>
-                      <select className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 font-bold text-gray-800 outline-none focus:border-indigo-500 transition-colors shadow-sm">
-                        <option>{train.source} - 16:55</option>
+                      <select value={boardingStation} onChange={(e) => setBoardingStation(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 font-bold text-gray-800 outline-none focus:border-indigo-500 transition-colors shadow-sm">
+                        <option value="">Select Boarding Station</option>
+                        <option value={`${train.source} - 16:55`}>{train.source} - 16:55</option>
                       </select>
                     </div>
                     <div className="flex gap-4 items-center">
@@ -262,9 +281,16 @@ const TrainBooking = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="relative max-w-md">
-                    <input type="text" value={irctcUser} onChange={e=>setIrctcUser(e.target.value)} placeholder="Enter IRCTC Username" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 font-bold text-gray-800 outline-none focus:border-indigo-500 transition-colors shadow-sm" />
-                    {irctcUser.length > 3 && <CheckCircle2 size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-500" />}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
+                    <div className="relative">
+                      <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1.5 mt-0">IRCTC Username</label>
+                      <input type="text" value={irctcUser} onChange={e=>setIrctcUser(e.target.value)} placeholder="Username" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 font-bold text-gray-800 outline-none focus:border-indigo-500 transition-colors shadow-sm" />
+                      {irctcUser.length > 3 && <CheckCircle2 size={18} className="absolute right-4 top-9 text-emerald-500" />}
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1.5 mt-0">IRCTC Password</label>
+                      <input type="password" value={irctcPass} onChange={e=>setIrctcPass(e.target.value)} placeholder="********" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 font-bold text-gray-800 outline-none focus:border-indigo-500 transition-colors shadow-sm" />
+                    </div>
                   </div>
                 </div>
 
@@ -389,13 +415,13 @@ const TrainBooking = () => {
 
                     <button 
                       onClick={validateAndProceed} 
-                      disabled={isProcessing}
-                      className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-4 rounded-xl uppercase tracking-widest text-xs flex justify-center items-center gap-2 transition-all shadow-xl shadow-indigo-600/20 disabled:opacity-70 group relative overflow-hidden"
+                      disabled={!isFormValid()}
+                      className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-4 rounded-xl uppercase tracking-widest text-xs flex justify-center items-center gap-2 transition-all shadow-xl shadow-indigo-600/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none group relative overflow-hidden"
                     >
-                      {isProcessing ? 'Processing Securely...' : 'Proceed to Payment'}
-                      {!isProcessing && <span className="absolute inset-0 w-full h-full -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:animate-[shine_1.5s_ease-in-out_infinite]"></span>}
+                      Proceed to Payment
+                      {isFormValid() && <span className="absolute inset-0 w-full h-full -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:animate-[shine_1.5s_ease-in-out_infinite]"></span>}
                     </button>
-                    {isProcessing && <p className="text-[10px] text-center mt-3 text-indigo-500 font-bold loading-pulse">Redirecting to IRCTC Gateway...</p>}
+                    {!isFormValid() && <p className="text-[10px] text-center mt-3 text-gray-400 font-bold">Please fill all required fields to proceed.</p>}
                   </div>
 
                 </div>
@@ -419,6 +445,11 @@ const TrainBooking = () => {
       )}
 
       <style jsx>{`
+        button:disabled {
+          background: #ccc !important;
+          cursor: not-allowed !important;
+          opacity: 0.6 !important;
+        }
         @keyframes shine {
           0% { transform: translateX(-100%); }
           100% { transform: translateX(100%); }

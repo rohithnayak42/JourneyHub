@@ -36,6 +36,15 @@ A sticky, collapsible sidebar with animated sections:
 - Context-aware category images (beach, mountain, city) based on destination.
 - Hover zoom animations, gradient overlays, and lazy loading for all cards.
 
+### 🔙 Modify Search — Reusable Navigation Button
+A consistent **"← Modify Search"** back button is present across **all four result pages** (Bus, Train, Flight, Hotel):
+- Built as a single reusable component (`components/common/ModifySearchButton.jsx`) — zero code duplication.
+- Calls `window.history.back()` on click, returning the user to the previous search form.
+- Styled to match the design system: white background, subtle gray border, 8px radius, smooth hover feedback.
+- Fully accessible with `aria-label` and a clear tap area for mobile users.
+- On **Bus / Flight / Hotel** pages: placed in the sticky header toolbar, inline with the Sort button.
+- On the **Train** page: placed before the train icon in the Route Summary section of the sticky header.
+
 ### 📊 User Dashboard
 - Authenticated user dashboard showing bookings and account details.
 - Protected routes ensuring only logged-in users access booking flows.
@@ -97,19 +106,22 @@ JourneyHub/
 │       │   ├── flight/        # Flight section components
 │       │   ├── hotel/         # Hotel section components
 │       │   ├── search/        # Shared search bar components
-│       │   ├── common/        # Shared utility components
+│       │   ├── common/
+│       │   │   ├── ModifySearchButton.jsx  # ← Reusable back-navigation button (all result pages)
+│       │   │   ├── Hero.jsx
+│       │   │   └── NotificationBell.jsx
 │       │   ├── FilterSidebar.jsx  # Advanced train filter sidebar
 │       │   ├── TrainCard.jsx      # Per-card scoped class selection
 │       │   └── Navbar.jsx
 │       ├── pages/
 │       │   ├── Home.jsx
-│       │   ├── BusResults.jsx
+│       │   ├── BusResults.jsx         # Uses ModifySearchButton in sticky header
 │       │   ├── BusSeatSelection.jsx   # Step 1 of bus booking
 │       │   ├── BusBoarding.jsx        # Step 2 of bus booking
 │       │   ├── BusPayment.jsx         # Step 3 — payment + e-ticket
-│       │   ├── TrainResults.jsx       # Train search with date slider & filters
-│       │   ├── FlightResults.jsx
-│       │   ├── HotelResults.jsx
+│       │   ├── TrainResults.jsx       # Uses ModifySearchButton in route summary header
+│       │   ├── FlightResults.jsx      # Uses ModifySearchButton in sticky header
+│       │   ├── HotelResults.jsx       # Uses ModifySearchButton in sticky header
 │       │   ├── BookingPage.jsx
 │       │   ├── Dashboard.jsx
 │       │   ├── Login.jsx
@@ -186,8 +198,29 @@ npm run dev
 - **Micro-animations** — hover lifts, scale transitions, shimmer loading skeletons.
 - **Parallax Hero sections** — full-viewport immersive entry points for each travel mode.
 - **Smart image fallbacks** — zero broken images; context-aware defaults per destination category.
-- **Accessible interactions** — disabled states, loading feedback, and clear visual affordances throughout.
+- **Consistent navigation UX** — "← Modify Search" button on every result page lets users refine their search without losing the flow, matching industry standards like MakeMyTrip & RedBus.
+- **Accessible interactions** — disabled states, loading feedback, `aria-label` attributes, and clear visual affordances throughout.
 
 ---
 
+## 📝 Changelog
 
+### v1.3.0 — Modify Search Navigation
+- Added reusable `ModifySearchButton` component (`components/common/ModifySearchButton.jsx`)
+- Integrated across all four result pages: Bus, Train, Flight, Hotel
+- Consistent `window.history.back()` navigation with hover-feedback styling
+
+### v1.2.0 — Train Interaction Fixes
+- Fixed weekday filter state scoping (global filter, not per-card)
+- Fixed class selection chips to be fully independent per `TrainCard`
+
+### v1.1.0 — Premium Visual Overhaul
+- Added 100vh parallax Hero for Train module
+- Implemented global Framer Motion page transitions
+- Scroll-reveal animations on all travel sections
+
+### v1.0.0 — Initial Release
+- Full Bus 3-step booking flow (Seat Selection → Boarding Points → Payment + E-Ticket)
+- Train smart search with date slider, filters, and sort
+- Flight & Hotel result pages with advanced filters
+- JWT auth, protected routes, user dashboard

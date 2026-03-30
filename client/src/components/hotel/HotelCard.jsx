@@ -7,7 +7,14 @@ const HotelCard = ({ hotel }) => {
   const [showRooms, setShowRooms] = useState(false);
 
   return (
-    <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 hover:shadow-[0_20px_40px_rgba(0,0,0,0.05)] hover:border-indigo-200 transition-all overflow-hidden flex flex-col group mb-8 relative">
+    <div 
+      className="bg-white rounded-[2rem] shadow-sm border border-gray-100 hover:shadow-[0_20px_40px_rgba(0,0,0,0.05)] hover:border-indigo-200 transition-all overflow-hidden flex flex-col group mb-8 relative"
+      data-price={hotel.price}
+      data-rating={hotel.rating}
+      data-stars={hotel.stars}
+      data-amenities={hotel.amenities?.join(',')}
+      data-location={hotel.location}
+    >
       <div className="flex flex-col xl:flex-row relative z-10 bg-white p-2">
          
          {/* Hotel Image Gallery */}
@@ -39,9 +46,17 @@ const HotelCard = ({ hotel }) => {
                </p>
 
                <div className="flex flex-wrap gap-2 mb-4">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-gray-500 bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-lg flex items-center gap-1.5"><Wifi size={12} className="text-indigo-500"/> Free High-Speed WiFi</span>
-                  <span className="text-[10px] font-black uppercase tracking-widest text-gray-500 bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-lg flex items-center gap-1.5"><Coffee size={12} className="text-indigo-500"/> Multi-Cuisine Restaurant</span>
-                  <span className="text-[10px] font-black uppercase tracking-widest text-gray-500 bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-lg flex items-center gap-1.5">Spa & Wellness</span>
+                  {hotel.amenities?.map((amenity, idx) => (
+                     <span key={idx} className="text-[10px] font-black uppercase tracking-widest text-gray-500 bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+                        {amenity === 'Free WiFi' && <Wifi size={12} className="text-indigo-500"/>}
+                        {amenity === 'Free Breakfast' && <Coffee size={12} className="text-indigo-500"/>}
+                        {amenity === 'Swimming Pool' && <span className="text-indigo-500 text-xs">🏊‍♂️</span>}
+                        {amenity === 'Gym' && <span className="text-indigo-500 text-xs">🏋️‍♂️</span>}
+                        {amenity === 'Spa & Wellness' && <span className="text-indigo-500 text-xs">💆‍♀️</span>}
+                        {amenity === 'Pet Friendly' && <span className="text-indigo-500 text-xs">🐾</span>}
+                        {amenity}
+                     </span>
+                  ))}
                </div>
             </div>
 

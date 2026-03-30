@@ -6,8 +6,16 @@ import FlightDetails from './FlightDetails';
 const FlightCard = ({ flight }) => {
   const [showDetails, setShowDetails] = useState(false);
 
+  const displayPrice = typeof flight.price === 'number' ? flight.price.toLocaleString('en-IN') : flight.price;
+
   return (
-    <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] hover:border-blue-200 transition-all overflow-hidden flex flex-col group mb-6 relative">
+    <div
+      className="bg-white rounded-[2rem] shadow-sm border border-gray-100 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] hover:border-blue-200 transition-all overflow-hidden flex flex-col group mb-6 relative"
+      data-price={flight.price}
+      data-airline={flight.airline}
+      data-departure={flight.departure}
+      data-stops={flight.stops}
+    >
       <div className="p-6 md:p-8 flex flex-col md:flex-row gap-6 md:gap-8 md:items-center relative z-10 bg-white">
          
          {/* Airline Info */}
@@ -63,7 +71,7 @@ const FlightCard = ({ flight }) => {
          {/* Pricing & Action */}
          <div className="flex-[1] flex flex-col md:items-end justify-center pt-2 md:pt-0 pl-0 md:pl-6 text-center md:text-right">
             <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 flex items-center justify-center md:justify-end gap-1 w-full"><Utensils size={10}/> Meal Included</span>
-            <span className="text-3xl md:text-4xl font-black text-gray-800 tracking-tight mb-4 flex w-full justify-center md:justify-end">₹{flight.price}</span>
+            <span className="text-3xl md:text-4xl font-black text-gray-800 tracking-tight mb-4 flex w-full justify-center md:justify-end">₹{displayPrice}</span>
             <button className="bg-blue-600 hover:bg-blue-700 shadow-md hover:shadow-xl hover:shadow-blue-500/30 text-white font-black py-3.5 px-8 rounded-xl transition-all w-full uppercase tracking-widest text-xs overflow-hidden relative group btn-shine">
                Book Now <span className="absolute inset-0 w-full h-full -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:animate-[shine_1.5s_ease-in-out_infinite]"></span>
             </button>

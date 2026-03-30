@@ -20,6 +20,8 @@ import BookingPage from './pages/BookingPage';
 import TrainBooking from './pages/TrainBooking';
 import TrainPayment from './pages/TrainPayment';
 import TrainTicket from './pages/TrainTicket';
+import FlightBooking from './pages/FlightBooking';
+import FlightTicket from './pages/FlightTicket';
 
 function App() {
   return (
@@ -57,6 +59,14 @@ function App() {
           <Route 
             path="/train/ticket" 
             element={<TrainTicket />} 
+          />
+          <Route 
+            path="/flight/booking" 
+            element={<FlightBooking />} 
+          />
+          <Route 
+            path="/flight/ticket" 
+            element={<FlightTicket />} 
           />
           <Route 
             path="/dashboard" 

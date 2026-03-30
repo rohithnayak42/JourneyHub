@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plane, ChevronDown, CheckCircle2, BaggageClaim, Utensils } from 'lucide-react';
 import FlightDetails from './FlightDetails';
 
 const FlightCard = ({ flight }) => {
   const [showDetails, setShowDetails] = useState(false);
+  const navigate = useNavigate();
 
   const displayPrice = typeof flight.price === 'number' ? flight.price.toLocaleString('en-IN') : flight.price;
 
@@ -72,7 +74,13 @@ const FlightCard = ({ flight }) => {
          <div className="flex-[1] flex flex-col md:items-end justify-center pt-2 md:pt-0 pl-0 md:pl-6 text-center md:text-right">
             <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 flex items-center justify-center md:justify-end gap-1 w-full"><Utensils size={10}/> Meal Included</span>
             <span className="text-3xl md:text-4xl font-black text-gray-800 tracking-tight mb-4 flex w-full justify-center md:justify-end">₹{displayPrice}</span>
-            <button className="bg-blue-600 hover:bg-blue-700 shadow-md hover:shadow-xl hover:shadow-blue-500/30 text-white font-black py-3.5 px-8 rounded-xl transition-all w-full uppercase tracking-widest text-xs overflow-hidden relative group btn-shine">
+            <button
+               onClick={() => {
+                 localStorage.setItem('selectedFlight', JSON.stringify(flight));
+                 navigate('/flight/booking');
+               }}
+               className="bg-blue-600 hover:bg-blue-700 shadow-md hover:shadow-xl hover:shadow-blue-500/30 text-white font-black py-3.5 px-8 rounded-xl transition-all w-full uppercase tracking-widest text-xs overflow-hidden relative group btn-shine"
+            >
                Book Now <span className="absolute inset-0 w-full h-full -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:animate-[shine_1.5s_ease-in-out_infinite]"></span>
             </button>
          </div>

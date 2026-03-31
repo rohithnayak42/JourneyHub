@@ -1,8 +1,33 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Check, Users } from 'lucide-react';
 
 const RoomSelection = ({ hotel, onClose }) => {
+  const navigate = useNavigate();
+
+  const handleBookRoom = (room) => {
+    const bookingData = {
+      hotelName: hotel.name,
+      hotelLocation: hotel.location,
+      hotelImage: hotel.image,
+      hotelRating: hotel.rating,
+      hotelReviews: hotel.reviews,
+      hotelStars: hotel.stars,
+      roomName: room.name,
+      roomPrice: room.price,
+      roomOriginalPrice: room.originalPrice,
+      roomAmenities: room.amenities,
+      roomInclusions: room.inclusions,
+      checkIn: "01 Apr 2026",
+      checkOut: "03 Apr 2026",
+      guests: room.guests,
+      rooms: 1
+    };
+    
+    localStorage.setItem('selectedHotelBooking', JSON.stringify(bookingData));
+    navigate('/hotel/booking');
+  };
   const rooms = [
     { name: "Deluxe King Room", guests: 2, space: "320 sq.ft", bed: "1 King Bed", price: hotel.basePrice || hotel.price, originalPrice: (hotel.basePrice || hotel.price) + 1200, left: 3,
       amenities: ["Free WiFi", "City View", "Air Conditioning"],
@@ -60,9 +85,12 @@ const RoomSelection = ({ hotel, onClose }) => {
                       <span className="text-[10px] font-bold text-gray-400 line-through">₹{room.originalPrice}</span>
                       <span className="text-3xl font-black text-gray-800 tracking-tight">₹{room.price}</span>
                       <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-4 mt-1">+ ₹{Math.round(room.price * 0.18)} Taxes & Fees</span>
-                      <button className="bg-indigo-600 hover:bg-indigo-700 shadow-md hover:shadow-indigo-500/30 text-white font-black py-3.5 px-4 rounded-xl transition-all w-full uppercase tracking-widest text-[10px]">
-                         Select Room
-                      </button>
+                      <button 
+                          onClick={() => handleBookRoom(room)}
+                          className="bg-indigo-600 hover:bg-indigo-700 shadow-md hover:shadow-indigo-500/30 text-white font-black py-3.5 px-4 rounded-xl transition-all w-full uppercase tracking-widest text-[10px]"
+                       >
+                          Select Room
+                       </button>
                    </div>
                 </div>
              </div>

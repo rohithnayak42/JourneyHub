@@ -22,6 +22,9 @@ import TrainPayment from './pages/TrainPayment';
 import TrainTicket from './pages/TrainTicket';
 import FlightBooking from './pages/FlightBooking';
 import FlightTicket from './pages/FlightTicket';
+import HotelBooking from './pages/HotelBooking';
+import HotelPayment from './pages/HotelPayment';
+import HotelConfirmation from './pages/HotelConfirmation';
 
 function App() {
   return (
@@ -67,6 +70,18 @@ function App() {
           <Route 
             path="/flight/ticket" 
             element={<FlightTicket />} 
+          />
+          <Route 
+            path="/hotel/booking" 
+            element={<HotelBooking />} 
+          />
+          <Route 
+            path="/hotel/payment" 
+            element={<HotelPayment />} 
+          />
+          <Route 
+            path="/hotel/confirmation" 
+            element={<HotelConfirmation />} 
           />
           <Route 
             path="/dashboard" 
